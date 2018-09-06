@@ -108,7 +108,9 @@ CREATE TABLE `storm` (
   `height` double NOT NULL,
   `model` tinyint(3) unsigned NOT NULL,
   `insertedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_triad` (`x`,`y`,`z`) USING BTREE,
+  KEY `model` (`model`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -130,4 +132,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-07  8:45:57
+-- Dump completed on 2018-09-07  8:58:55
