@@ -1,7 +1,7 @@
-LOAD DATA INFILE '/var/lib/mysql-files/test.csv'
+LOAD DATA INFILE '/home/nyou045/git/storm_surge/Model_20CR_test.csv'
 REPLACE INTO TABLE storm
 COLUMNS TERMINATED BY ','
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(@lat, @lng, @dt, height)
-SET latlng = Point(@lng, @lat), datetime=STR_TO_DATE(@dt, '%Y-%c-%e-%H-%i-%s'), model='Model_20CR';
+(x, y, z, height)
+SET model=0;
