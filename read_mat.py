@@ -64,6 +64,7 @@ if model_name == 'Model_20CR':
 else:
     model = loadmat(model)
     print(model.keys())
+    sshistorical = model['ss_historical']
     rcp45 = model['ss_rcp45']
     rcp85 = model['ss_rcp85']
     hdstart = model['historical_dates'][0]
@@ -71,22 +72,28 @@ else:
     fzoffset = find_dt_offset(fdstart)
     hzoffset = find_dt_offset(hdstart)
     print("Offset of {} is {}".format(hdstart, hzoffset))
-    latstart = model['lat'][0, 0]
-    lonstart = model['lon'][0, 0]
-    xoffset = np.where(lons == lonstart)[0][0]
-    yoffset = np.where(lats == latstart)[1][0]
-    print("Offset of {},{} is {},{}".format(latstart, lonstart, xoffset, yoffset))
-    sshistorical = model['ss_historical']
-    locallats = model['lat']
+    lats = model['lat'][:,0]
+    lons = model['lon'][0,:]
     zl = sshistorical.shape[0]
-    xl, yl = locallats.T.shape
+    xl = len(lons)
+    yl = len(lats)
+    print("{} lons, {} lats".format(xl, yl))
+    if false:
+        i = 0
+        with open('f_latlng.csv', 'w') as f:
+            f.write('id,x,y,lat,lng\n')
+            for x in range(xl):
+                for y in range(yl):
+                    f.write("{},{},{},{},{}\n".format(i, x, y, lats[y], lons[x]))
+                    i += 1
+        exit(1)
     with open(model_name + '.csv', 'w') as f:
         f.write("x,y,z,height,model\n")
         for z in range(zl):
             for x in range(xl):
                 for y in range(yl):
                     hheight = sshistorical[z][x * yl + y]
-                    f.write("{},{},{},{},{}\n".format(x+xoffset, y+yoffset, z+hzoffset, hheight, 0))
+                    f.write("{},{},{},{},{}\n".format(x, y, z+hzoffset, hheight, 0))
             print("{}/{} done".format(z, zl))
         zl = rcp45.shape[0]
         for z in range(zl):
@@ -94,6 +101,6 @@ else:
                 for y in range(yl):
                     rcp45height = rcp45[z][x * yl + y]
                     rcp85height = rcp85[z][x * yl + y]
-                    f.write("{},{},{},{},{}\n".format(x+xoffset, y+yoffset, z+fzoffset, rcp45height, 1))
-                    f.write("{},{},{},{},{}\n".format(x+xoffset, y+yoffset, z+fzoffset, rcp85height, 2))
+                    f.write("{},{},{},{},{}\n".format(x, y, z+fzoffset, rcp45height, 1))
+                    f.write("{},{},{},{},{}\n".format(x, y, z+fzoffset, rcp85height, 2))
             print("{}/{} done".format(z, zl))
