@@ -78,7 +78,7 @@ else:
     xl = len(lons)
     yl = len(lats)
     print("{} lons, {} lats".format(xl, yl))
-    if false:
+    if False:
         i = 0
         with open('f_latlng.csv', 'w') as f:
             f.write('id,x,y,lat,lng\n')
