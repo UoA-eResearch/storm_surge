@@ -64,7 +64,10 @@ if model_name == 'Model_20CR':
 else:
     model = loadmat(model)
     print(model.keys())
-    sshistorical = model['ss_historical']
+    if 'ss_historical' in model:
+        sshistorical = model['ss_historical']
+    else:
+        sshistorical = model['ss_hist']
     rcp45 = model['ss_rcp45']
     rcp85 = model['ss_rcp85']
     hdstart = model['historical_dates'][0]
