@@ -87,7 +87,7 @@ else:
                 for y in range(yl):
                     hheight = sshistorical[z][x * yl + y]
                     f.write("{},{},{},{},{}".format(x+xoffset, y+yoffset, z+hzoffset, hheight, 0))
-                    exit(1)
+            print("{}/{} done".format(z, zl))
         zl = rcp45.shape[0]
         for z in range(zl):
             for x in range(xl):
@@ -96,3 +96,4 @@ else:
                     rcp85height = rcp85[z][x * yl + y]
                     f.write("{},{},{},{},{}".format(x+xoffset, y+yoffset, z+fzoffset, rcp45height, 1))
                     f.write("{},{},{},{},{}".format(x+xoffset, y+yoffset, z+fzoffset, rcp85height, 2))
+            print("{}/{} done".format(z, zl))
