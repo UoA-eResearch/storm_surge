@@ -18,7 +18,7 @@ def enable_cors():
 
 @application.get('/')
 def get(db):
-    model = request.params.get('model', 'model_20cr')
+    model = request.params.get('model', 'Model_20CR')
     bounds = request.params.get('bounds', "Polygon((160 -30.5,187 -30.5,187 -49.5,160 -49.5, 160 -30.5))")
     mindate = request.params.get('mindate', '1871-01-01 12:00')
     maxdate = request.params.get('maxdate', '1871-01-01 12:00')
