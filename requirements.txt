@@ -2,3 +2,5 @@ scipy
 h5py
 pandas
 numpy
+bottle
+bottle-mysql
