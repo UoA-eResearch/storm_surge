@@ -100,20 +100,29 @@ else:
         zl = rcp45.shape[0]
         normalized_z = 0
         rcp45z = 0
-        rcp85z = 0
         for z in range(zl):
             if 'future_dates' in model:
                 dt = model['future_dates'][z]
                 normalised_z = find_dt_offset(dt, normalized_z)
                 rcp45z = normalised_z
-                rcp85z = normalised_z
             else:
                 rcp45z = find_dt_offset(model['future_dates45'][z], rcp45z)
-                rcp85z = find_dt_offset(model['future_dates85'][z], rcp85z)
             for x in range(xl):
                 for y in range(yl):
                     rcp45height = rcp45[z][x * yl + y]
-                    rcp85height = rcp85[z][x * yl + y]
                     f.write("{},{},{},{},{}\n".format(x, y, rcp45z, rcp45height, 1))
+            print("{}/{} done".format(z, zl))
+        zl = rcp85.shape[0]
+        rcp85z = 0
+        for z in range(zl):
+            if 'future_dates' in model:
+                dt = model['future_dates'][z]
+                normalised_z = find_dt_offset(dt, normalized_z)
+                rcp85z = normalised_z
+            else:
+                rcp85z = find_dt_offset(model['future_dates85'][z], rcp85z)
+            for x in range(xl):
+                for y in range(yl):
+                    rcp85height = rcp85[z][x * yl + y]
                     f.write("{},{},{},{},{}\n".format(x, y, rcp85z, rcp85height, 2))
             print("{}/{} done".format(z, zl))
