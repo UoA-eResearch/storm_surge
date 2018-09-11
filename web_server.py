@@ -32,3 +32,32 @@ def get(db):
     results = db.fetchall()
     print("{} results".format(len(results)))
     return {"results": results}
+
+@application.get('/ranges')
+def get_ranges(db):
+    model = request.params.get('model', 'Model_20CR')
+
+    lltable = "f_latlng"
+    if model == 'Model_20CR':
+        lltable = "latlng"
+    # Ensure indexes are used by avoiding joins
+    query = "SELECT MIN(m.x) AS minX, MIN(m.y) AS minY, MIN(m.z) AS minZ, MAX(m.x) AS maxX, MAX(m.y) AS maxY, MAX(m.z) as maxZ FROM `" + model + "` m;"
+    db.execute(query)
+    result = db.fetchone()
+    query = "SELECT ST_X(l.latlng) AS minLng, ST_Y(l.latlng) AS minLat FROM `{}` l WHERE x={} AND y={};".format(lltable, result['minX'], result['minY']);
+    db.execute(query)
+    minll = db.fetchone()
+    result.update(minll)
+    query = "SELECT ST_X(l.latlng) AS maxLng, ST_Y(l.latlng) AS maxLat FROM `{}` l WHERE x={} AND y={};".format(lltable, result['maxX'], result['maxY']);
+    db.execute(query)
+    maxll = db.fetchone()
+    result.update(maxll)
+    query = "SELECT DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') as minDate FROM date d WHERE d.id={};".format(result['minZ'])
+    db.execute(query)
+    minDate = db.fetchone()
+    result.update(minDate)
+    query = "SELECT DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') as maxDate FROM date d WHERE d.id={};".format(result['maxZ'])
+    db.execute(query)
+    maxDate = db.fetchone()
+    result.update(maxDate)
+    return result
