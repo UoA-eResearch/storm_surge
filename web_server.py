@@ -23,7 +23,7 @@ def get(db):
     mindate = request.params.get('mindate', '1871-01-01 12:00')
     maxdate = request.params.get('maxdate', '1871-01-01 12:00')
     lltable = "f_latlng"
-    if model == 'model_20cr':
+    if model == 'Model_20CR':
         lltable = "latlng"
     query = "SELECT ST_Y(l.latlng) AS lat, ST_X(l.latlng) AS lng, m.height, DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') AS dt FROM `" + model + "` m INNER JOIN `" + lltable + "` l ON m.x = l.x AND m.y = l.y INNER JOIN date d ON m.z = d.id "
     query += "WHERE MBRContains(ST_GeomFromText('" + bounds + "'), l.latlng) AND d.datetime BETWEEN '" + mindate + "' AND '" + maxdate + "';"
