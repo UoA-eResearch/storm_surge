@@ -138,6 +138,7 @@ function fetchDataForModel(model, mindate, maxdate) {
         maxdate = mindate;
     }
     $.getJSON(baseUrl, { model: model, mindate: mindate, maxdate: maxdate }, function(data) {
+        console.log("Got " + data.results.length + " results for " + model)
         var minHeight = Infinity;
         var maxHeight = -Infinity;
         for (var i in data.results) {
@@ -162,6 +163,7 @@ function fetchRangesForModel(model) {
 }
 
 $("#model").change(function(e) {
+    markers.clearLayers();
     fetchRangesForModel(this.value);
 });
 
