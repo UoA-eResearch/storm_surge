@@ -1,4 +1,14 @@
-var map = L.map('map').setView([-41.235726,172.5118422], 6);
+var map = L.map('map', {
+    center: [-41.235726,172.5118422],
+    zoom: 5,
+    minZoom: 5
+});
+var bounds = map.getBounds();
+bounds._northEast.lat += 10;
+bounds._northEast.lng += 10;
+bounds._southWest.lat -= 10;
+bounds._southWest.lng -= 10;
+map.setMaxBounds(bounds);
 
 var baseMaps = {
     "OSM": L.tileLayer.provider("OpenStreetMap.Mapnik"),
@@ -69,12 +79,30 @@ legend.onAdd = function (map) {
 };
 legend.addTo(map);
 
+function getColor(value){
+    //value from 0 to 1
+    return "hsl(" + (1 - value) * 250 + ",100%,50%)";
+}
+
 function fetchDataForModel(model, mindate, maxdate) {
     if (!maxdate) {
         maxdate = mindate;
     }
     $.getJSON("https://r.nectar.auckland.ac.nz/storm/", { model: model, mindate: mindate, maxdate: maxdate }, function(data) {
-        console.log(data);
+        var minHeight = Infinity;
+        var maxHeight = -Infinity;
+        for (var i in data.results) {
+            var e = data.results[i];
+            if (e.height < minHeight) minHeight = e.height;
+            if (e.height > maxHeight) maxHeight = e.height;
+        }
+        for (var i in data.results) {
+            var e = data.results[i];
+            var desc = e.lat + "," + e.lng + " = " + e.height + "m";
+            var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
+            var color = getColor(normalised_height)
+            var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color}).addTo(map).bindTooltip(desc);
+        }
     })
 }
 
