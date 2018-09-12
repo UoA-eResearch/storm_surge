@@ -38,8 +38,7 @@ def get(db):
     query = "SELECT ST_Y(l.latlng) AS lat, ST_X(l.latlng) AS lng, m.height, DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') AS datetime FROM `" + model + "` m INNER JOIN `" + lltable + "` l ON m.x = l.x AND m.y = l.y INNER JOIN date d ON m.z = d.id "
     query += "WHERE MBRContains(ST_GeomFromText('" + bounds + "'), l.latlng) AND d.datetime BETWEEN '" + mindate + "' AND '" + maxdate + "'"
     if model != 'Model_20CR':
-        pass
-        #query += " AND m.model = {}".format(submodel)
+        query += " AND m.model = {}".format(submodel)
     print(query)
     db.execute(query)
     results = db.fetchall()
@@ -78,20 +77,15 @@ def get_ranges(db):
     if model == 'Model_20CR':
         lltable = "latlng"
     # Ensure indexes are used by avoiding joins
-    query = "SELECT MIN(m.x) AS minX, MIN(m.y) AS minY, MIN(m.z) AS minZ, MAX(m.x) AS maxX, MAX(m.y) AS maxY, MAX(m.z) as maxZ FROM `" + model + "` m"
+    query = "SELECT MIN(m.z) AS minZ, MAX(m.z) as maxZ FROM `" + model + "` m"
     if model != "Model_20CR":
-        pass
-        # query += " WHERE m.model = {}".format(submodel)
+        query += " WHERE m.model = {}".format(submodel)
     db.execute(query)
     result = db.fetchone()
-    query = "SELECT ST_X(l.latlng) AS minLng, ST_Y(l.latlng) AS minLat FROM `{}` l WHERE x={} AND y={};".format(lltable, result['minX'], result['minY']);
+    query = "SELECT MIN(x) AS minX, MAX(x) AS maxX, MIN(y) AS minY, MAX(y) AS maxY, MIN(ST_X(l.latlng)) AS minLng, MAX(ST_X(l.latlng)) AS maxLng, MIN(ST_Y(l.latlng)) AS minLat, MAX(ST_Y(l.latlng)) AS maxLat FROM `{}` l;".format(lltable);
     db.execute(query)
-    minll = db.fetchone()
-    result.update(minll)
-    query = "SELECT ST_X(l.latlng) AS maxLng, ST_Y(l.latlng) AS maxLat FROM `{}` l WHERE x={} AND y={};".format(lltable, result['maxX'], result['maxY']);
-    db.execute(query)
-    maxll = db.fetchone()
-    result.update(maxll)
+    ll = db.fetchone()
+    result.update(ll)
     query = "SELECT DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') as minDate FROM date d WHERE d.id={};".format(result['minZ'])
     db.execute(query)
     minDate = db.fetchone()
