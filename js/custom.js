@@ -1,7 +1,7 @@
 var map = L.map('map', {
     center: [-41.235726,172.5118422],
     zoom: 5,
-    minZoom: 5
+    minZoom: 5,
 });
 var bounds = map.getBounds();
 bounds._northEast.lat += 10;
@@ -182,3 +182,28 @@ $("#download").click(function() {
         $("#download_status").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
     });
 })
+
+// DOM element where the Timeline will be attached
+var container = document.getElementById('timeline');
+
+var dataset = new vis.DataSet([]);
+
+// Configuration for the Timeline
+var options = {
+    width: "100%",
+    min: "1800-1-1",
+    start: "1850-1-1",
+    max: "2200-1-1",
+    end: "2130-1-1",
+    zoomable: true,
+    zoomMin: 1000 * 60 * 60 * 24,
+};
+
+// Create a Timeline
+var timeline = new vis.Timeline(container, dataset, options);
+
+timeline.addCustomTime("1871-1-1 12:00", 1);
+
+timeline.on('timechanged', function(e) {
+    console.log("timechange", e);
+});

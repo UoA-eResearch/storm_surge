@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/leaflet.css"/>
         <link rel="stylesheet" href="css/leaflet.draw.css"/>
+        <link rel="stylesheet" href="css/vis.min.css"/>
         <style>
             html, body, #map {
                 width: 100%;
@@ -13,10 +14,18 @@
                 margin: 0;
                 padding: 0;
             }
+            #timeline {
+                position: absolute;
+                width: 100%;
+                bottom: 0;
+                z-index: 1000;
+                background-color: white;
+            }
         </style>
     </head>
     <body>
         <div id="map"></div>
+        <div id="timeline"></div>
         <script src="js/leaflet.js"></script>
         <script src="js/leaflet.draw.js"></script>
         <script src="js/leaflet-providers.js"></script>
@@ -24,6 +33,7 @@
         <script src="js/terraformer.js"></script>
         <script src="js/terraformer-wkt-parser.js"></script>
         <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/vis.min.js"></script>
         <script src="js/custom.js"></script>
     </body>
 </html>
