@@ -118,7 +118,7 @@ legend.onAdd = function (map) {
             html += "<option>" + combo + "</option>";
         }
     }
-    html += '</select><br><span id="selected_points">0</span> points selected. <button id="download">Download</button>';
+    html += '</select><br><span id="selected_points">0</span> points selected. <button id="download">Download</button><div id="download_status"></div>';
     div.innerHTML = html;
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
@@ -130,11 +130,13 @@ function getColor(value){
     return "hsl(" + (1 - value) * 250 + ",100%,50%)";
 }
 
+var baseUrl = "https://r.nectar.auckland.ac.nz/storm/";
+
 function fetchDataForModel(model, mindate, maxdate) {
     if (!maxdate) {
         maxdate = mindate;
     }
-    $.getJSON("https://r.nectar.auckland.ac.nz/storm/", { model: model, mindate: mindate, maxdate: maxdate }, function(data) {
+    $.getJSON(baseUrl, { model: model, mindate: mindate, maxdate: maxdate }, function(data) {
         var minHeight = Infinity;
         var maxHeight = -Infinity;
         for (var i in data.results) {
@@ -153,7 +155,7 @@ function fetchDataForModel(model, mindate, maxdate) {
 }
 
 function fetchRangesForModel(model) {
-    $.getJSON("https://r.nectar.auckland.ac.nz/storm/ranges", { model: model }, function(data) {
+    $.getJSON(baseUrl + "ranges", { model: model }, function(data) {
         fetchDataForModel(model, data.minDate);
     })
 }
@@ -165,8 +167,15 @@ $("#model").change(function(e) {
 fetchRangesForModel("Model_20CR")
 
 $("#download").click(function() {
+    var payload = {}
     if (subset) {
-        var wkt = Terraformer.WKT.convert(subset.toGeoJSON().geometry);
+        wkt = Terraformer.WKT.convert(subset.toGeoJSON().geometry);
         console.log(wkt);
+        payload.bounds = wkt;
     }
+    $("#download_status").text("Preparing export...");
+    $.getJSON(baseUrl + "?format=csv", payload, function(data) {
+        var url = baseUrl + data.url;
+        $("#download_status").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
+    });
 })

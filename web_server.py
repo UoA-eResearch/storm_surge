@@ -46,7 +46,7 @@ def get(db):
         zipfilename = filename_with_path + ".zip"
         with ZipFile(zipfilename, "w") as zip:
             zip.write(filename_with_path, filename)
-        return zipfilename
+        return {"url": zipfilename}
     else:
         return {"results": results}
 
