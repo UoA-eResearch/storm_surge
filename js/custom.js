@@ -27,6 +27,7 @@ baseMaps["CartoDB Positron"].addTo(map);
 
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
+var subset;
 var drawControl = new L.Control.Draw({
     edit: {
         featureGroup: drawnItems,
@@ -46,15 +47,39 @@ var drawControl = new L.Control.Draw({
 });
 map.addControl(drawControl);
 
-map.on(L.Draw.Event.CREATED, function (event) {
-    var layer = event.layer;
+var markers = L.layerGroup().addTo(map);
 
+map.on(L.Draw.Event.CREATED, function (e) {
+    var layer = e.layer;
+    if (subset) {
+        drawnItems.removeLayer(subset);
+    }
     drawnItems.addLayer(layer);
-    console.log(layer);
+    subset = layer;
+    var count = 0;
+    if (e.layerType == "circle") {
+        var center = layer.getLatLng();
+        var radius = layer.getRadius();
+        markers.eachLayer(function(marker) {
+            var markerll = marker.getLatLng();
+            var dist = markerll.distanceTo(center);
+            if (dist <= radius) {
+                count++;
+            }
+        });
+    } else {
+        markers.eachLayer(function(marker) {
+            if (layer.contains(marker.getLatLng())) {
+                count++;
+            }
+        });
+    }
+    console.log(count + " points in ", layer);
 });
 
 var overlays = {
-    "Drawn Items": drawnItems
+    "Drawn Items": drawnItems,
+    "Markers": markers,
 }
 
 L.control.layers(baseMaps, overlays).addTo(map);
@@ -101,7 +126,7 @@ function fetchDataForModel(model, mindate, maxdate) {
             var desc = e.lat + "," + e.lng + " = " + e.height + "m";
             var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
             var color = getColor(normalised_height)
-            var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color}).addTo(map).bindTooltip(desc);
+            var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color}).addTo(markers).bindTooltip(desc);
         }
     })
 }
