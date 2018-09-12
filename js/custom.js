@@ -49,8 +49,18 @@ map.addControl(drawControl);
 
 var markers = L.layerGroup().addTo(map);
 
-map.on(L.Draw.Event.CREATED, function (e) {
-    var layer = e.layer;
+function drawHandler(e) {
+    console.log(e);
+    var layer;
+    if (e.layers) {
+        e.layers.eachLayer(function (l) {
+            layer = l;
+            return false;
+        });
+    } else if (e.layer) {
+        layer = e.layer;
+    }
+    console.log(layer);
     if (subset) {
         drawnItems.removeLayer(subset);
     }
@@ -75,7 +85,17 @@ map.on(L.Draw.Event.CREATED, function (e) {
         });
     }
     console.log(count + " points in ", layer);
-});
+    $("#selected_points").text(count);
+
+}
+
+map.on(L.Draw.Event.CREATED, drawHandler);
+map.on(L.Draw.Event.EDITED, drawHandler);
+map.on(L.Draw.Event.DELETESTOP, function() {
+    subset = null;
+    $("#selected_points").text(0);
+    console.log("draw deleted");
+})
 
 var overlays = {
     "Drawn Items": drawnItems,
@@ -98,6 +118,7 @@ legend.onAdd = function (map) {
             html += "<option>" + combo + "</option>";
         }
     }
+    html += '</select><br><span id="selected_points">0</span> points selected. <button id="download">Download</button>';
     div.innerHTML = html;
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
@@ -142,3 +163,10 @@ $("#model").change(function(e) {
 });
 
 fetchRangesForModel("Model_20CR")
+
+$("#download").click(function() {
+    if (subset) {
+        var wkt = Terraformer.WKT.convert(subset.toGeoJSON().geometry);
+        console.log(wkt);
+    }
+})
