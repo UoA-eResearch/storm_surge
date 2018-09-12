@@ -42,7 +42,8 @@ var drawControl = new L.Control.Draw({
         },
         marker: false,
         circlemarker: false,
-        polyline: false
+        polyline: false,
+        circle: false
     }
 });
 map.addControl(drawControl);
