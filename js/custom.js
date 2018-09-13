@@ -207,7 +207,7 @@ var options = {
     min: "1800-1-1",
     max: "2200-1-1",
     zoomable: true,
-    zoomMin: 1000 * 60 * 60 * 24
+    zoomMin: 1000 * 60 * 60 * 24 * 7
 };
 
 // Create a Timeline
