@@ -7,7 +7,7 @@ import os
 import sys
 from datetime import datetime
 import csv
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 
 application = Bottle()
 plugin = bottle_mysql.Plugin(dbuser='storm_ro', dbpass='storm', dbname='storm')
@@ -53,7 +53,7 @@ def get(db):
             writer.writeheader()
             writer.writerows(results)
         zipfilename = filename_with_path + ".zip"
-        with ZipFile(zipfilename, "w") as zip:
+        with ZipFile(zipfilename, "w", ZIP_DEFLATED) as zip:
             zip.write(filename_with_path, filename)
         return {"url": zipfilename}
     else:
