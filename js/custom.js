@@ -162,6 +162,7 @@ function fetchRangesForModel(model) {
     $.getJSON(baseUrl + "ranges", { model: model }, function(data) {
         dataset.update({id: 1, content: model, start: data.minDate, end: data.maxDate});
         timeline.setCustomTime(data.minDate, 1);
+        timeline.setWindow(data.minDate, data.maxDate);
         fetchDataForModel(model, data.minDate);
     })
 }
@@ -222,6 +223,8 @@ Date.prototype.formatYYYYMMDD = function(){
 }
 
 timeline.on('timechanged', function(e) {
+    e.time.setHours(12, 0, 0, 0);
+    timeline.setCustomTime(e.time, 1);
     var dateString = e.time.formatYYYYMMDD() + " 12:00";
     console.log("timechange", e, dateString);
     fetchDataForModel(window.model, dateString);
