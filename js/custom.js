@@ -161,8 +161,11 @@ function fetchDataForModel(model, minDate, maxDate) {
 function fetchRangesForModel(model) {
     $.getJSON(baseUrl + "ranges", { model: model }, function(data) {
         dataset.update({id: 1, content: model, start: data.minDate, end: data.maxDate});
-        timeline.setCustomTime(data.minDate, 1);
-        timeline.setWindow(data.minDate, data.maxDate);
+        var ct = timeline.getCustomTime(1);
+        if (ct < new Date(data.minDate) || ct > new Date(data.maxDate)) {
+            timeline.setCustomTime(data.minDate, 1);
+            timeline.setWindow(data.minDate, data.maxDate);
+        }
         fetchDataForModel(model, data.minDate);
     })
 }
