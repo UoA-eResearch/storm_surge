@@ -30,13 +30,13 @@ def get(db):
         model = bits[0]
         submodel = submodels.index(bits[1])
     bounds = request.params.get('bounds', "Polygon((160 -30.5,187 -30.5,187 -49.5,160 -49.5, 160 -30.5))")
-    mindate = request.params.get('mindate', '1871-01-01 12:00')
-    maxdate = request.params.get('maxdate', '1871-01-01 12:00')
+    minDate = request.params.get('minDate', '1871-01-01 12:00')
+    maxDate = request.params.get('maxDate', '1871-01-01 12:00')
     lltable = "f_latlng"
     if model == 'Model_20CR':
         lltable = "latlng"
     query = "SELECT ST_Y(l.latlng) AS lat, ST_X(l.latlng) AS lng, m.height, DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') AS datetime FROM `" + model + "` m INNER JOIN `" + lltable + "` l ON m.x = l.x AND m.y = l.y INNER JOIN date d ON m.z = d.id "
-    query += "WHERE MBRContains(ST_GeomFromText('" + bounds + "'), l.latlng) AND d.datetime BETWEEN '" + mindate + "' AND '" + maxdate + "'"
+    query += "WHERE MBRContains(ST_GeomFromText('" + bounds + "'), l.latlng) AND d.datetime BETWEEN '" + minDate + "' AND '" + maxDate + "'"
     if model != 'Model_20CR':
         query += " AND m.model = {}".format(submodel)
     print(query)

@@ -133,12 +133,14 @@ function getColor(value){
 
 var baseUrl = "https://r.nectar.auckland.ac.nz/storm/";
 
-function fetchDataForModel(model, mindate, maxdate) {
-    if (!maxdate) {
-        maxdate = mindate;
+function fetchDataForModel(model, minDate, maxDate) {
+    if (!maxDate) {
+        maxDate = minDate;
     }
-    $.getJSON(baseUrl, { model: model, mindate: mindate, maxdate: maxdate }, function(data) {
+    console.log("fetching", baseUrl, model, minDate, maxDate);
+    $.getJSON(baseUrl, { model: model, minDate: minDate, maxDate: maxDate }, function(data) {
         console.log("Got " + data.results.length + " results for " + model)
+        markers.clearLayers();
         var minHeight = Infinity;
         var maxHeight = -Infinity;
         for (var i in data.results) {
@@ -158,19 +160,27 @@ function fetchDataForModel(model, mindate, maxdate) {
 
 function fetchRangesForModel(model) {
     $.getJSON(baseUrl + "ranges", { model: model }, function(data) {
+        dataset.update({id: 1, content: model, start: data.minDate, end: data.maxDate});
+        timeline.setCustomTime(data.minDate, 1);
         fetchDataForModel(model, data.minDate);
     })
 }
 
 $("#model").change(function(e) {
-    markers.clearLayers();
+    window.model = this.value;
     fetchRangesForModel(this.value);
 });
+
+window.model = "Model_20CR";
 
 fetchRangesForModel("Model_20CR")
 
 $("#download").click(function() {
-    var payload = {}
+    var dt = timeline.getCustomTime(1).formatYYYYMMDD() + " 12:00";
+    var payload = {
+        minDate: dt,
+        maxDate: dt,
+    }
     if (subset) {
         wkt = Terraformer.WKT.convert(subset.toGeoJSON().geometry);
         console.log(wkt);
@@ -186,17 +196,17 @@ $("#download").click(function() {
 // DOM element where the Timeline will be attached
 var container = document.getElementById('timeline');
 
-var dataset = new vis.DataSet([]);
+var dataset = new vis.DataSet([
+    {id: 1, content: 'Data range', start: '1871-1-1 12:00', end: '2100-1-1 12:00'},
+]);
 
 // Configuration for the Timeline
 var options = {
     width: "100%",
     min: "1800-1-1",
-    start: "1850-1-1",
     max: "2200-1-1",
-    end: "2130-1-1",
     zoomable: true,
-    zoomMin: 1000 * 60 * 60 * 24,
+    zoomMin: 1000 * 60 * 60 * 24
 };
 
 // Create a Timeline
@@ -204,6 +214,15 @@ var timeline = new vis.Timeline(container, dataset, options);
 
 timeline.addCustomTime("1871-1-1 12:00", 1);
 
+Date.prototype.formatYYYYMMDD = function(){
+    var day = ("0" + this.getDate()).slice(-2);
+    var month = ("0" + (this.getMonth() + 1)).slice(-2);
+    var year = this.getFullYear();
+    return year + "-" + month + "-" + day;
+}
+
 timeline.on('timechanged', function(e) {
-    console.log("timechange", e);
+    var dateString = e.time.formatYYYYMMDD() + " 12:00";
+    console.log("timechange", e, dateString);
+    fetchDataForModel(window.model, dateString);
 });
