@@ -181,6 +181,7 @@ $("#download").click(function() {
     var payload = {
         minDate: dt,
         maxDate: dt,
+        model: window.model,
     }
     if (subset) {
         wkt = Terraformer.WKT.convert(subset.toGeoJSON().geometry);
