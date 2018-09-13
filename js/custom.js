@@ -132,6 +132,7 @@ function getColor(value){
 }
 
 var baseUrl = "https://r.nectar.auckland.ac.nz/storm/";
+var markerLookup = [];
 
 function fetchDataForModel(model, minDate, maxDate) {
     if (!maxDate) {
@@ -139,8 +140,7 @@ function fetchDataForModel(model, minDate, maxDate) {
     }
     console.log("fetching", baseUrl, model, minDate, maxDate);
     $.getJSON(baseUrl, { model: model, minDate: minDate, maxDate: maxDate }, function(data) {
-        console.log("Got " + data.results.length + " results for " + model)
-        markers.clearLayers();
+        console.log("Got " + data.results.length + " results for " + model);
         var minHeight = Infinity;
         var maxHeight = -Infinity;
         for (var i in data.results) {
@@ -153,7 +153,12 @@ function fetchDataForModel(model, minDate, maxDate) {
             var desc = e.lat + "," + e.lng + " = " + e.height + "m";
             var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
             var color = getColor(normalised_height)
-            var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color, fillOpacity: 1}).addTo(markers).bindTooltip(desc);
+            if (markerLookup[i]) {
+                markerLookup[i].setStyle({color: color}).setTooltipContent(desc);
+            } else {
+                var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color, fillOpacity: 1}).addTo(markers).bindTooltip(desc);
+                markerLookup[i] = marker;
+            }
         }
     })
 }
@@ -172,6 +177,8 @@ function fetchRangesForModel(model) {
 
 $("#model").change(function(e) {
     window.model = this.value;
+    markers.clearLayers();
+    markerLookup = [];
     fetchRangesForModel(this.value);
 });
 
