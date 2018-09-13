@@ -153,7 +153,7 @@ function fetchDataForModel(model, minDate, maxDate) {
             var desc = e.lat + "," + e.lng + " = " + e.height + "m";
             var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
             var color = getColor(normalised_height)
-            var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color}).addTo(markers).bindTooltip(desc);
+            var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color, fillOpacity: 1}).addTo(markers).bindTooltip(desc);
         }
     })
 }
