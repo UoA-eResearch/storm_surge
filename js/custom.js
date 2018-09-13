@@ -153,7 +153,7 @@ function fetchDataForModel(model, minDate, maxDate) {
             var desc = e.lat + "," + e.lng + " = " + e.height + "m";
             var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
             var color = getColor(normalised_height)
-            var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color}).addTo(markers).bindTooltip(desc);
+            var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color, fillOpacity: 1}).addTo(markers).bindTooltip(desc);
         }
     })
 }
@@ -161,8 +161,11 @@ function fetchDataForModel(model, minDate, maxDate) {
 function fetchRangesForModel(model) {
     $.getJSON(baseUrl + "ranges", { model: model }, function(data) {
         dataset.update({id: 1, content: model, start: data.minDate, end: data.maxDate});
-        timeline.setCustomTime(data.minDate, 1);
-        timeline.setWindow(data.minDate, data.maxDate);
+        var ct = timeline.getCustomTime(1);
+        if (ct < new Date(data.minDate) || ct > new Date(data.maxDate)) {
+            timeline.setCustomTime(data.minDate, 1);
+            timeline.setWindow(data.minDate, data.maxDate);
+        }
         fetchDataForModel(model, data.minDate);
     })
 }
@@ -229,4 +232,13 @@ timeline.on('timechanged', function(e) {
     var dateString = e.time.formatYYYYMMDD() + " 12:00";
     console.log("timechange", e, dateString);
     fetchDataForModel(window.model, dateString);
+});
+
+$(".vis-panel.vis-bottom").bind('wheel', function (event) {
+    console.log("scroll on bottom");
+    if (event.originalEvent.deltaY < 0) {
+        timeline.zoomIn(1);
+    } else {
+        timeline.zoomOut(1);
+    }
 });
