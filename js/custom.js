@@ -233,3 +233,12 @@ timeline.on('timechanged', function(e) {
     console.log("timechange", e, dateString);
     fetchDataForModel(window.model, dateString);
 });
+
+$(".vis-panel.vis-bottom").bind('wheel', function (event) {
+    console.log("scroll on bottom");
+    if (event.originalEvent.deltaY < 0) {
+        timeline.zoomIn(1);
+    } else {
+        timeline.zoomOut(1);
+    }
+});
