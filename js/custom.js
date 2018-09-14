@@ -149,6 +149,7 @@ function fetchDataForModel(model, minDate, maxDate) {
     console.log("fetching", baseUrl, model, minDate, maxDate);
     $.getJSON(baseUrl, { model: model, minDate: minDate, maxDate: maxDate }, function(data) {
         console.log("Got " + data.results.length + " results for " + model);
+        if (data.results.length == 0) return;
         var minHeight = Infinity;
         var maxHeight = -Infinity;
         for (var i in data.results) {
@@ -221,7 +222,8 @@ $("#download").click(function() {
 var container = document.getElementById('timeline');
 
 var dataset = new vis.DataSet([
-    {id: 1, content: 'Data range', start: '1871-1-1 12:00', end: '2100-1-1 12:00'},
+    {id: 1, content: 'Data range', start: '1871-1-1 12:00', end: '2100-1-1 12:00', editable: false},
+    {id: 2, content: 'Timeseries download range', start: '1871-1-1 12:00', end: '1871-2-1 12:00', editable: {updateTime: true, remove: false}}
 ]);
 
 // Configuration for the Timeline
@@ -230,7 +232,16 @@ var options = {
     min: "1800-1-1",
     max: "2200-1-1",
     zoomable: true,
-    zoomMin: 1000 * 60 * 60 * 24 * 7
+    zoomMin: 1000 * 60 * 60 * 24 * 7,
+    editable: {
+        updateTime: true,
+        remove: false,
+        overrideItems: false
+    },
+    snap: function (date, scale, step) {
+        date.setHours(12, 0, 0, 0);
+        return date;
+    }
 };
 
 // Create a Timeline
