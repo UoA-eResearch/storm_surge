@@ -173,7 +173,10 @@ function fetchDataForModel(model, minDate, maxDate) {
                 markerLookup[i] = marker;
             }
         }
-    })
+    }).fail(function(e) {
+        alert("There was an error fetching data for " + model + ": " + e.status + " " + e.statusText);
+        console.error(e);
+    });
 }
 
 function fetchRangesForModel(model) {
@@ -191,7 +194,10 @@ function fetchRangesForModel(model) {
             dataset.update({id: 2, start: start, end: end});
         }
         fetchDataForModel(model, data.minDate);
-    })
+    }).fail(function(e) {
+        alert("There was an error fetching data ranges for " + model + ": " + e.status + " " + e.statusText);
+        console.error(e);
+    });
 }
 
 $("#model").change(function(e) {
@@ -221,6 +227,11 @@ $("#download").click(function() {
     $.getJSON(baseUrl + "?format=csv", payload, function(data) {
         var url = baseUrl + data.url;
         $("#download_status").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
+    }).fail(function(e) {
+        var error = "There was an error exporting data for " + window.model + ": " + e.status + " " + e.statusText;
+        alert(error);
+        $("#download_status").html(error);
+        console.error(e);
     });
 })
 
