@@ -35,7 +35,7 @@ def get(db):
     lltable = "f_latlng"
     if model == 'Model_20CR':
         lltable = "latlng"
-    query = "SELECT ST_Y(l.latlng) AS lat, ST_X(l.latlng) AS lng, m.height, DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') AS datetime FROM `" + model + "` m INNER JOIN `" + lltable + "` l ON m.x = l.x AND m.y = l.y INNER JOIN date d ON m.z = d.id "
+    query = "SELECT ST_Y(l.latlng) AS lat, ST_X(l.latlng) AS lng, m.height, DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') AS datetime FROM `" + model + "` m USE INDEX(z) INNER JOIN `" + lltable + "` l ON m.x = l.x AND m.y = l.y INNER JOIN date d ON m.z = d.id "
     query += "WHERE MBRContains(ST_GeomFromText('" + bounds + "'), l.latlng) AND l.offshore=1 AND d.datetime BETWEEN '" + minDate + "' AND '" + maxDate + "'"
     if model != 'Model_20CR':
         query += " AND m.model = {}".format(submodel)
