@@ -119,7 +119,7 @@ legend.onAdd = function (map) {
             html += "<option>" + combo + "</option>";
         }
     }
-    html += '</select><br><span id="selected_points">0</span> points selected. <button id="download">Download</button><div id="download_status"></div>';
+    html += '</select><div id="download_info"><span id="selected_points">0</span> points selected.<br>Timeseries range: <span id="start"></span>-<span id="end"></span><br><button id="download">Download</button><div id="download_status"></div></div>';
     var colors = [];
     for (var i = 1; i >= 0; i -= .1) {
         colors.push(getColor(i));
@@ -200,10 +200,10 @@ window.model = "Model_20CR";
 fetchRangesForModel("Model_20CR")
 
 $("#download").click(function() {
-    var dt = timeline.getCustomTime(1).formatYYYYMMDD() + " 12:00";
+    var dt = dataset.get(2);
     var payload = {
-        minDate: dt,
-        maxDate: dt,
+        minDate: dt.start.formatYYYYMMDD() + " 12:00",
+        maxDate: dt.end.formatYYYYMMDD() + " 12:00",
         model: window.model,
     }
     if (subset) {
@@ -218,13 +218,31 @@ $("#download").click(function() {
     });
 })
 
+Date.prototype.formatYYYYMMDD = function(){
+    var day = ("0" + this.getDate()).slice(-2);
+    var month = ("0" + (this.getMonth() + 1)).slice(-2);
+    var year = this.getFullYear();
+    return year + "-" + month + "-" + day;
+}
+
 // DOM element where the Timeline will be attached
 var container = document.getElementById('timeline');
 
 var dataset = new vis.DataSet([
-    {id: 1, content: 'Data range', start: '1871-1-1 12:00', end: '2100-1-1 12:00', editable: false},
-    {id: 2, content: 'Timeseries download range', start: '1871-1-1 12:00', end: '1871-2-1 12:00', editable: {updateTime: true, remove: false}}
+    {id: 1, content: 'Data range', start: new Date(1871, 1, 1, 12), end: new Date(2100, 1, 1, 12), editable: false},
+    {id: 2, content: 'Timeseries download range', start: new Date(1871, 1, 1, 12), end: new Date(1872, 1, 1, 12), editable: {updateTime: true, remove: false}}
 ]);
+
+dataset.on('update', function (event, properties) {
+    var range = properties.data[0];
+    if (range.id != 2) return;
+    console.log(range);
+    $("#download_info #start").text(range.start.formatYYYYMMDD());
+    $("#download_info #end").text(range.end.formatYYYYMMDD());
+});
+
+$("#download_info #start").text(dataset.get(2).start.formatYYYYMMDD());
+$("#download_info #end").text(dataset.get(2).end.formatYYYYMMDD());
 
 // Configuration for the Timeline
 var options = {
@@ -248,13 +266,6 @@ var options = {
 var timeline = new vis.Timeline(container, dataset, options);
 
 timeline.addCustomTime("1871-1-1 12:00", 1);
-
-Date.prototype.formatYYYYMMDD = function(){
-    var day = ("0" + this.getDate()).slice(-2);
-    var month = ("0" + (this.getMonth() + 1)).slice(-2);
-    var year = this.getFullYear();
-    return year + "-" + month + "-" + day;
-}
 
 timeline.on('timechanged', function(e) {
     e.time.setHours(12, 0, 0, 0);
