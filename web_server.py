@@ -60,6 +60,7 @@ def get(db):
         with ZipFile(zipfilename, "w", ZIP_DEFLATED) as zip:
             zip.write(filename_with_path, filename)
         print("{}s - zip written".format(time.time() - s))
+        os.remove(filename_with_path)
         return {"url": zipfilename}
     else:
         return {"results": results}
