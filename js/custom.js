@@ -120,6 +120,14 @@ legend.onAdd = function (map) {
         }
     }
     html += '</select><br><span id="selected_points">0</span> points selected. <button id="download">Download</button><div id="download_status"></div>';
+    var colors = [];
+    for (var i = 1; i >= 0; i -= .1) {
+        colors.push(getColor(i));
+    }
+    var colorbar = '<div id="colorbar"><div id="gradient" style="background-image: linear-gradient(' + colors.join(",") + ');"></div>';
+    colorbar += '<div id="max" class="label">1</div><div id="mid" class="label">.5</div><div id="min" class="label">0</div>';
+    colorbar += '</div>';
+    html += colorbar;
     div.innerHTML = html;
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
@@ -148,6 +156,10 @@ function fetchDataForModel(model, minDate, maxDate) {
             if (e.height < minHeight) minHeight = e.height;
             if (e.height > maxHeight) maxHeight = e.height;
         }
+        var dp = 4;
+        $("#colorbar #max").text(maxHeight.toFixed(dp) + "m");
+        $("#colorbar #mid").text(((maxHeight - minHeight) / 2).toFixed(dp) + "m");
+        $("#colorbar #min").text(minHeight.toFixed(dp) + "m");
         for (var i in data.results) {
             var e = data.results[i];
             var desc = e.lat + "," + e.lng + " = " + e.height + "m";
