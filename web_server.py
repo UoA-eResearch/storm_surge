@@ -8,6 +8,7 @@ import sys
 from datetime import datetime
 import csv
 from zipfile import ZipFile, ZIP_DEFLATED
+import time
 
 application = Bottle()
 plugin = bottle_mysql.Plugin(dbuser='storm_ro', dbpass='storm', dbname='storm')
@@ -23,6 +24,7 @@ def enable_cors():
 
 @application.get('/')
 def get(db):
+    s = time.time()
     model = request.params.get('model', 'Model_20CR')
     submodel = 0
     if ' - ' in model:
@@ -41,8 +43,9 @@ def get(db):
         query += " AND m.model = {}".format(submodel)
     print(query)
     db.execute(query)
+    print("{}s - Query executed".format(time.time() - s))
     results = db.fetchall()
-    print("{} results".format(len(results)))
+    print("{}s - {} results fetched".format(time.time() - s, len(results)))
     response_format = request.params.get('format', 'json')
     if response_format == 'csv':
         dt = datetime.now().isoformat()
@@ -52,9 +55,11 @@ def get(db):
             writer = csv.DictWriter(csvfile, fieldnames=["lat", "lng", "datetime", "height"])
             writer.writeheader()
             writer.writerows(results)
+        print("{}s - csv written".format(time.time() - s))
         zipfilename = filename_with_path + ".zip"
         with ZipFile(zipfilename, "w", ZIP_DEFLATED) as zip:
             zip.write(filename_with_path, filename)
+        print("{}s - zip written".format(time.time() - s))
         return {"url": zipfilename}
     else:
         return {"results": results}
