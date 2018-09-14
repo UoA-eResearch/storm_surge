@@ -178,11 +178,17 @@ function fetchDataForModel(model, minDate, maxDate) {
 
 function fetchRangesForModel(model) {
     $.getJSON(baseUrl + "ranges", { model: model }, function(data) {
-        dataset.update({id: 1, content: model, start: data.minDate, end: data.maxDate});
+        var start = new Date(data.minDate);
+        var end = new Date(data.maxDate);
+        dataset.update({id: 1, content: model, start: start, end: end});
         var ct = timeline.getCustomTime(1);
-        if (ct < new Date(data.minDate) || ct > new Date(data.maxDate)) {
-            timeline.setCustomTime(data.minDate, 1);
-            timeline.setWindow(data.minDate, data.maxDate);
+        if (ct < start || ct > end) {
+            timeline.setCustomTime(start, 1);
+            timeline.setWindow(start, end);
+        }
+        var dateRange = dataset.get(2);
+        if (dateRange.end < start || dateRange.start > end) {
+            dataset.update({id: 2, start: start, end: end});
         }
         fetchDataForModel(model, data.minDate);
     })
@@ -229,8 +235,8 @@ Date.prototype.formatYYYYMMDD = function(){
 var container = document.getElementById('timeline');
 
 var dataset = new vis.DataSet([
-    {id: 1, content: 'Data range', start: new Date(1871, 1, 1, 12), end: new Date(2100, 1, 1, 12), editable: false},
-    {id: 2, content: 'Timeseries download range', start: new Date(1871, 1, 1, 12), end: new Date(1872, 1, 1, 12), editable: {updateTime: true, remove: false}}
+    {id: 1, content: 'Data range', start: new Date(1871, 0, 1, 12), end: new Date(2100, 0, 1, 12), editable: false},
+    {id: 2, content: 'Timeseries download range', start: new Date(1871, 0, 1, 12), end: new Date(1900, 0, 1, 12), editable: {updateTime: true, remove: false}}
 ]);
 
 dataset.on('update', function (event, properties) {
