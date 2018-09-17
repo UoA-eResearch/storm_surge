@@ -99,8 +99,8 @@ map.on(L.Draw.Event.DELETESTOP, function() {
 })
 
 var overlays = {
-    "Drawn Items": drawnItems,
-    "Markers": markers,
+    "Selections": drawnItems,
+    "Data points": markers,
 }
 
 L.control.layers(baseMaps, overlays).addTo(map);
@@ -119,7 +119,7 @@ downloadinfo.onAdd = function (map) {
             html += "<option>" + combo + "</option>";
         }
     }
-    html += '</select><div id="download_info"><span id="selected_points">0</span> points selected.<br>Timeseries range: <span id="start"></span>-<span id="end"></span><br><button id="download">Download</button><div id="download_status"></div></div>';
+    html += '</select><div id="download_info"><span id="selected_points">0</span> data points selected.<br>Timeseries range: <span id="start"></span>-<span id="end"></span><br><button id="download">Download</button><div id="download_status"></div></div>';
 
     div.innerHTML = html;
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
