@@ -43,9 +43,11 @@ var drawControl = new L.Control.Draw({
         marker: false,
         circlemarker: false,
         polyline: false,
-        circle: false
+        circle: false,
     }
 });
+L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a selection polygon';
+L.drawLocal.draw.toolbar.buttons.rectangle = 'Draw a selection rectangle';
 map.addControl(drawControl);
 
 var markers = L.layerGroup().addTo(map);
