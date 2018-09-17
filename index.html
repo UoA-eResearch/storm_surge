@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Storm Surge Viewer/Subset downloader</title>
+        <title>NZ Storm Surge Data Tool</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/leaflet.css"/>
@@ -13,6 +13,23 @@
                 height: 100%;
                 margin: 0;
                 padding: 0;
+            }
+            #title {
+                position: absolute;
+                top: 30px;
+                left: 0;
+                right: 0;
+                margin: auto;
+                z-index: 1000;
+                width: 400px;
+                text-align: center;
+                color: white;
+                border-radius: 5px;
+                padding: 10px;
+                background-color: rgba(0, 0, 0, 1);
+                font-family: Arial, Helvetica, sans-serif;
+                text-shadow: 2px 2px #000000;
+                font-weight: normal;
             }
             #timeline {
                 position: absolute;
@@ -46,6 +63,7 @@
         </style>
     </head>
     <body>
+        <h1 id="title">NZ Storm Surge Data Tool</h1>
         <div id="map"></div>
         <div id="timeline"></div>
         <script src="js/leaflet.js"></script>
