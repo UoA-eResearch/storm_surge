@@ -105,8 +105,8 @@ var overlays = {
 
 L.control.layers(baseMaps, overlays).addTo(map);
 
-var legend = L.control({position: 'topright'});
-legend.onAdd = function (map) {
+var downloadinfo = L.control({position: 'topright'});
+downloadinfo.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend');
     var html = '<select id="model"><option value="Model_20CR">Model 20CR (Past)</option>';
     var models = ["ACCESS10", "BCC-CSM", "CSIRO", "EC_EARTH", "GFDL", "INM-CM4", "MIROC5"];
@@ -120,18 +120,26 @@ legend.onAdd = function (map) {
         }
     }
     html += '</select><div id="download_info"><span id="selected_points">0</span> points selected.<br>Timeseries range: <span id="start"></span>-<span id="end"></span><br><button id="download">Download</button><div id="download_status"></div></div>';
-    var colors = [];
-    for (var i = 1; i >= 0; i -= .1) {
-        colors.push(getColor(i));
-    }
-    var colorbar = '<div id="colorbar"><div id="gradient" style="background-image: linear-gradient(' + colors.join(",") + ');"></div>';
-    colorbar += '<div id="max" class="label">1</div><div id="mid" class="label">.5</div><div id="min" class="label">0</div>';
-    colorbar += '</div>';
-    html += colorbar;
+
     div.innerHTML = html;
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
 };
+downloadinfo.addTo(map);
+
+var legend = L.control({position: 'bottomright'});
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create('div', 'info legend');    var colors = [];
+    for (var i = 1; i >= 0; i -= .1) {
+        colors.push(getColor(i));
+    }
+    var colorbar = '<h3>Legend</h3><div id="colorbar"><div id="gradient" style="background-image: linear-gradient(' + colors.join(",") + ');"></div>';
+    colorbar += '<div id="max" class="label">0.0725m</div><div id="mid" class="label">0.0527m</div><div id="min" class="label">-0.0328m</div>';
+    colorbar += '</div>';
+    div.innerHTML = colorbar;
+    div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+    return div;
+}
 legend.addTo(map);
 
 function getColor(value){
