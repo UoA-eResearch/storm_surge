@@ -42,6 +42,10 @@ def get(db):
     if model != 'Model_20CR':
         query += " AND m.model = {}".format(submodel)
     print(query)
+    db.execute("EXPLAIN " + query)
+    explain = db.fetchall()
+    for table in explain:
+        print(table)
     db.execute(query)
     print("{}s - Query executed".format(time.time() - s))
     results = db.fetchall()
