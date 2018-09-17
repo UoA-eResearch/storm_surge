@@ -246,8 +246,8 @@ Date.prototype.formatYYYYMMDD = function(){
 var container = document.getElementById('timeline');
 
 var dataset = new vis.DataSet([
-    {id: 1, content: 'Data range', start: new Date(1871, 0, 1, 12), end: new Date(2100, 0, 1, 12), editable: false},
-    {id: 2, content: 'Timeseries download range', start: new Date(1871, 0, 1, 12), end: new Date(1900, 0, 1, 12), editable: {updateTime: true, remove: false}}
+    {id: 1, content: 'Data range', start: new Date(1871, 0, 1, 12), end: new Date(2100, 0, 1, 12), editable: false, selectable: false},
+    {id: 2, content: 'Timeseries export range', start: new Date(1871, 0, 1, 12), end: new Date(1900, 0, 1, 12), editable: {updateTime: true, remove: false}}
 ]);
 
 dataset.on('update', function (event, properties) {
@@ -281,6 +281,12 @@ var options = {
 
 // Create a Timeline
 var timeline = new vis.Timeline(container, dataset, options);
+
+timeline.setSelection(2);
+timeline.on("select", function() {
+    // enforce selection on range
+    timeline.setSelection(2);
+});
 
 timeline.addCustomTime("1871-1-1 12:00", 1);
 
