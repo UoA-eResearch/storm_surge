@@ -171,7 +171,7 @@ function fetchDataForModel(model, minDate, maxDate) {
         $("#colorbar #min").text(minHeight.toFixed(dp) + "m");
         for (var i in data.results) {
             var e = data.results[i];
-            var desc = e.lat + "," + e.lng + " = " + e.height + "m";
+            var desc = "(" + e.lat + "°," + e.lng + "°): " + e.height + "m";
             var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
             var color = getColor(normalised_height)
             if (markerLookup[i]) {
