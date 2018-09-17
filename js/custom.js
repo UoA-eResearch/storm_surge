@@ -11,16 +11,9 @@ bounds._southWest.lng -= 10;
 map.setMaxBounds(bounds);
 
 var baseMaps = {
-    "OSM": L.tileLayer.provider("OpenStreetMap.Mapnik"),
-    "OSM Grayscale": L.tileLayer.provider("OpenStreetMap.BlackAndWhite"),
-    "CartoDB Positron": L.tileLayer.provider('CartoDB.Positron'),
-    "CartoDB Dark Matter": L.tileLayer.provider("CartoDB.DarkMatter"),
+    "CartoDB Positron": L.tileLayer.provider('CartoDB.PositronNoLabels'),
+    "CartoDB Dark Matter": L.tileLayer.provider("CartoDB.DarkMatterNoLabels"),
     "ESRI WorldImagery": L.tileLayer.provider("Esri.WorldImagery"),
-    "Google Hybrid": L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
-        maxZoom: 20,
-        subdomains:['mt0','mt1','mt2','mt3']
-    }),
-    "Wikimedia": L.tileLayer.provider("Wikimedia")
 };
 
 baseMaps["CartoDB Positron"].addTo(map);
@@ -100,9 +93,17 @@ map.on(L.Draw.Event.DELETESTOP, function() {
     console.log("draw deleted");
 })
 
+
+map.createPane('labels');
+map.getPane('labels').style.zIndex = 650;
+map.getPane('labels').style.pointerEvents = 'none';
+var labels = L.tileLayer.provider("Stamen.TonerLabels", {pane: "labels"});
+labels.addTo(map);
+
 var overlays = {
     "Selections": drawnItems,
     "Data points": markers,
+    "City labels": labels,
 }
 
 L.control.layers(baseMaps, overlays).addTo(map);
