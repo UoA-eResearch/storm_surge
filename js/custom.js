@@ -110,7 +110,7 @@ L.control.layers(baseMaps, overlays).addTo(map);
 
 var downloadinfo = L.control({position: 'topright'});
 downloadinfo.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'info legend');
+    var div = L.DomUtil.create('div', 'info downloadinfo');
     var html = '<select id="model"><option value="Model_20CR">Model 20CR (Past)</option>';
     var models = ["ACCESS10", "BCC-CSM", "CSIRO", "EC_EARTH", "GFDL", "INM-CM4", "MIROC5"];
     var submodels = ["Historical", "rcp4.5", "rcp8.5"]
