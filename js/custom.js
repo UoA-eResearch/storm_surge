@@ -317,3 +317,7 @@ $(".vis-panel.vis-bottom").bind('wheel', function (event) {
         timeline.zoomOut(1);
     }
 });
+
+$(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="css/images/pin.svg" title="Current time: ' + new Date() + '"/>');
+
+$('[data-toggle="tooltip"]').tooltip()
