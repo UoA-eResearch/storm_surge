@@ -299,8 +299,8 @@ timeline.setSelection(2);
 timeline.on("select", function() {
     // enforce selection on range
     timeline.setSelection(2);
-    $(".vis-drag-left").prepend('<i class="fas fa-step-backward" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
-    $(".vis-drag-right").prepend('<i class="fas fa-step-forward" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
+    $(".vis-drag-left").prepend('<i class="fas fa-chevron-circle-left" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
+    $(".vis-drag-right").prepend('<i class="fas fa-chevron-circle-right" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
 });
 
 timeline.addCustomTime("1871-1-1 12:00", 1);
@@ -326,8 +326,8 @@ $(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-
 
 $('[data-toggle="tooltip"]').tooltip()
 
-$(".vis-drag-left").prepend('<i class="fas fa-step-backward" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
-$(".vis-drag-right").prepend('<i class="fas fa-step-forward" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
+$(".vis-drag-left").prepend('<i class="fas fa-chevron-circle-left" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
+$(".vis-drag-right").prepend('<i class="fas fa-chevron-circle-right" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
 setTimeout(function() {
-    $(".vis-custom-time").prepend('<i class="fas fa-play" style="font-size:25px;pointer-events:none;color:blue;" aria-hidden="true"></span>')
+    $(".vis-custom-time").prepend('<i class="fas fa-play-circle" style="font-size:25px;pointer-events:none;color:blue;" aria-hidden="true"></span>')
 },1);
