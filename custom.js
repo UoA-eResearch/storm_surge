@@ -327,7 +327,7 @@ $(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-
 $('[data-toggle="tooltip"]').tooltip()
 
 $(".vis-drag-left").prepend('<i class="fas fa-chevron-circle-left" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
-$(".vis-drag-right").prepend('<i class="fas fa-chevron-circle-right" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
+$(".vis-drag-right").prepend('<i class="fas fa-chevron-circle-right" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
 setTimeout(function() {
-    $(".vis-custom-time").prepend('<i class="fas fa-play-circle" style="font-size:25px;pointer-events:none;color:blue;" aria-hidden="true"></span>')
+    $(".vis-custom-time").prepend('<i class="fas fa-play-circle" style="font-size:25px;pointer-events:none;color:blue;" aria-hidden="true"></i>')
 },1);
