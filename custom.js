@@ -190,6 +190,8 @@ function fetchDataForModel(model, minDate, maxDate) {
     });
 }
 
+var ONE_YEAR_MS = 1000 * 60 * 60 * 24 * 365;
+
 function fetchRangesForModel(model) {
     $.getJSON(baseUrl + "ranges", { model: model }, function(data) {
         var start = new Date(data.minDate);
@@ -198,7 +200,7 @@ function fetchRangesForModel(model) {
         var ct = timeline.getCustomTime(1);
         if (ct < start || ct > end) {
             timeline.setCustomTime(start, 1);
-            timeline.setWindow(start, end);
+            timeline.setWindow(start.getTime() - ONE_YEAR_MS, end.getTime() + ONE_YEAR_MS);
         }
         var dateRange = dataset.get(2);
         if (dateRange.end < start || dateRange.start > end) {
