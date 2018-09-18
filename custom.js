@@ -297,6 +297,8 @@ timeline.setSelection(2);
 timeline.on("select", function() {
     // enforce selection on range
     timeline.setSelection(2);
+    $(".vis-drag-left").prepend('<span class="glyphicon glyphicon-step-backward" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
+    $(".vis-drag-right").prepend('<span class="glyphicon glyphicon-step-forward" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
 });
 
 timeline.addCustomTime("1871-1-1 12:00", 1);
@@ -318,12 +320,13 @@ $(".vis-panel.vis-bottom").bind('wheel', function (event) {
     }
 });
 
-$(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="css/images/pin.svg" title="Current time: ' + new Date() + '"/>');
+$(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="images/pin.svg" title="Current time: ' + new Date() + '"/>');
 
 $('[data-toggle="tooltip"]').tooltip()
 
 $(".vis-drag-left").prepend('<span class="glyphicon glyphicon-step-backward" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
 $(".vis-drag-right").prepend('<span class="glyphicon glyphicon-step-forward" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
+$(".vis-custom-time").prepend('<span class="glyphicon glyphicon-play" style="font-size:25px;pointer-events:none;color:blue;" aria-hidden="true"></span>')
 setTimeout(function() {
     $(".vis-custom-time").prepend('<span class="glyphicon glyphicon-play" style="font-size:25px;pointer-events:none;color:blue;" aria-hidden="true"></span>')
 },1);
