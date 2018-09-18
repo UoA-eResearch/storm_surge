@@ -1,6 +1,6 @@
 var map = L.map('map', {
     center: [-41.235726,172.5118422],
-    zoom: 5,
+    zoom: 6,
     minZoom: 5,
 });
 var bounds = map.getBounds();
