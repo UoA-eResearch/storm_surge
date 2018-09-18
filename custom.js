@@ -41,6 +41,13 @@ var drawControl = new L.Control.Draw({
 });
 L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a selection polygon';
 L.drawLocal.draw.toolbar.buttons.rectangle = 'Draw a selection rectangle';
+L.drawLocal.edit.toolbar.buttons = {
+    edit: 'Edit selection',
+    editDisabled: 'No selection to edit',
+    remove: 'Delete selection',
+    removeDisabled: 'No selection to delete'
+}
+
 map.addControl(drawControl);
 
 var markers = L.layerGroup().addTo(map);
