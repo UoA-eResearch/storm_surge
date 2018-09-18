@@ -321,3 +321,6 @@ $(".vis-panel.vis-bottom").bind('wheel', function (event) {
 $(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="css/images/pin.svg" title="Current time: ' + new Date() + '"/>');
 
 $('[data-toggle="tooltip"]').tooltip()
+
+$(".vis-drag-left").prepend('<span class="glyphicon glyphicon-step-backward" style="font-size:25px;pointer-events:none" aria-hidden="true"></span>')
+$(".vis-drag-right").prepend('<span class="glyphicon glyphicon-step-forward" style="font-size:25px;pointer-events:none" aria-hidden="true"></span>')
