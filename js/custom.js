@@ -150,7 +150,7 @@ function getColor(value){
     return "hsl(" + (1 - value) * 250 + ",100%,50%)";
 }
 
-var baseUrl = "https://r.nectar.auckland.ac.nz/storm/";
+var baseUrl = "https://stormsurge.nectar.auckland.ac.nz/storm/";
 var markerLookup = [];
 
 function fetchDataForModel(model, minDate, maxDate) {
