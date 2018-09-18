@@ -28,6 +28,9 @@ html, body,  #map{
 .vis-current-time {
     pointer-events: all;
 }
+.vis-custom-time {
+    z-index: 10000;
+}
 #curDateImg{
     position: fixed;
     bottom: 19%;
