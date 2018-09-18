@@ -31,6 +31,12 @@ html, body,  #map{
 .vis-custom-time {
     z-index: 10000;
 }
+#timeline #buttons {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    z-index: 20000;
+}
 #curDateImg{
     position: fixed;
     bottom: 19%;
