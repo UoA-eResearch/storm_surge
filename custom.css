@@ -106,6 +106,14 @@ html, body,  #map{
     color: white;
 }
 
+#export h4 {
+    margin-top: 20px;
+}
+
+#download_status {
+    margin-top: 20px;
+}
+
 .leaflet-control-layers-toggle {
     width: 30px !important;
     height: 30px !important;
