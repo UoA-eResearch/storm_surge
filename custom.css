@@ -31,6 +31,18 @@ html, body,  #map{
 .vis-custom-time {
     z-index: 10000;
 }
+.vis-custom-time div::before {
+    content: "";
+    background: black;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, white, blue 40%, black);
+    left: -2px;
+    top: 30%;
+    display: block;
+    position: relative;
+    width: 25px;
+    height: 25px;
+}
 #timeline #buttons {
     position: absolute;
     right: 20px;
@@ -43,6 +55,11 @@ html, body,  #map{
     z-index: 10000;
     width: 2em;
     height: 3em;
+}
+.vis-drag-left,.vis-drag-right {
+    background: black;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, white, orange 30%, black);
 }
 #timeline {
     position: absolute;

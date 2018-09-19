@@ -309,8 +309,6 @@ timeline.setSelection(2);
 timeline.on("select", function() {
     // enforce selection on range
     timeline.setSelection(2);
-    $(".vis-drag-left").prepend('<i class="fas fa-chevron-circle-left" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
-    $(".vis-drag-right").prepend('<i class="fas fa-chevron-circle-right" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></span>')
 });
 
 timeline.addCustomTime("1871-1-1 12:00", 1);
@@ -335,9 +333,3 @@ $(".vis-panel.vis-bottom").bind('wheel', function (event) {
 $(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="images/pin.svg" title="Current time: ' + new Date() + '"/>');
 
 $('[data-toggle="tooltip"]').tooltip()
-
-$(".vis-drag-left").prepend('<i class="fas fa-chevron-circle-left" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
-$(".vis-drag-right").prepend('<i class="fas fa-chevron-circle-right" style="font-size:25px;pointer-events:none;color:orange" aria-hidden="true"></i>')
-setTimeout(function() {
-    $(".vis-custom-time").prepend('<i class="fas fa-play-circle" style="font-size:25px;pointer-events:none;color:blue;" aria-hidden="true"></i>')
-},1);
