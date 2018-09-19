@@ -241,15 +241,30 @@ $("#download").click(function() {
         console.log(wkt);
         payload.bounds = wkt;
     }
-    $("#download_status").text("Preparing export...");
+    $("#statustext").text("Preparing export...");
+    $("#downloadprogresswrapper").show();
+    var start = new Date();
+    var estTime = parseInt($("#est_time").text());
+    clearInterval(interval);
+    var interval = setInterval(function() {
+        var elapsed = (new Date() - start) / 1000;
+        var pct = Math.round(elapsed / estTime * 100);
+        console.log(elapsed, pct);
+        $("#downloadprogress").text(pct + "%");
+        $("#downloadprogress").css("width", pct + "%");
+        $("#downloadprogress").attr("aria-valuenow", pct);
+    }, 1000);
     $.getJSON(baseUrl + "?format=csv", payload, function(data) {
         var url = baseUrl + data.url;
-        $("#download_status").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
+        $("#statustext").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
     }).fail(function(e) {
         var error = "There was an error exporting data for " + window.model + ": " + e.status + " " + e.statusText;
         alert(error);
-        $("#download_status").html(error);
+        $("#statustext").html(error);
         console.error(e);
+    }).always(function(e) {
+        $("#downloadprogresswrapper").hide();
+        clearInterval(interval);
     });
 })
 

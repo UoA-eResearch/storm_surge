@@ -75,7 +75,12 @@
                     <span id="total_rows">0</span> total rows for export. Estimated (worst-case) time to export: <span id="est_time">60</span> seconds
                     <br><br>
                     <button id="download" class="btn btn-primary">Export</button>
-                    <div id="download_status"></div>
+                    <div id="download_status">
+                        <div id="downloadprogresswrapper" class="progress" style="display: none">
+                            <div id="downloadprogress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0%" aria-valuemin="0%" aria-valuemax="100%" style="width: 0%"></div>
+                        </div>
+                        <div id="statustext"></div>
+                    </div>
                 </div>
             </div>
         </div>

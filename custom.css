@@ -114,6 +114,10 @@ html, body,  #map{
     margin-top: 20px;
 }
 
+#downloadprogress {
+    color: black;
+}
+
 .leaflet-control-layers-toggle {
     width: 30px !important;
     height: 30px !important;
