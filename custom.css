@@ -128,7 +128,9 @@ html, body,  #map{
 .leaflet-draw div.leaflet-draw-section,div.leaflet-draw-toolbar>a {
     display: inline-block !important;
 }
-
+.leaflet-draw-actions {
+    z-index: 10000;
+}
 .info {
     background-color: black;
     padding: 15px;
