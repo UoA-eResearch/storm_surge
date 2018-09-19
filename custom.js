@@ -277,11 +277,15 @@ dataset.on('update', function (event, properties) {
     updateSelectedDays();
 });
 
+var rows_per_sec = 0.002816185242407056;
+
 function updateTotalRows() {
     var days = $('#selected_days').text();
     var points = $('#selected_points').text();
     var total = days * points;
+    var est_time = Math.round(total * rows_per_sec);
     $('#total_rows').text(total);
+    $('#est_time').text(est_time);
 }
 
 function updateSelectedDays() {
