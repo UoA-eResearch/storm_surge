@@ -60,6 +60,29 @@ $("#download_info #control").append($(".leaflet-draw"));
 
 var markers = L.layerGroup().addTo(map);
 
+function updateSelection() {
+    var count = 0;
+    if (subset.layerType == "circle") {
+        var center = subset.getLatLng();
+        var radius = subset.getRadius();
+        markers.eachLayer(function(marker) {
+            var markerll = marker.getLatLng();
+            var dist = markerll.distanceTo(center);
+            if (dist <= radius) {
+                count++;
+            }
+        });
+    } else {
+        markers.eachLayer(function(marker) {
+            if (subset.contains(marker.getLatLng())) {
+                count++;
+            }
+        });
+    }
+    console.log(count + " points in ", subset);
+    $("#selected_points").text(count);
+}
+
 function drawHandler(e) {
     console.log(e);
     var layer;
@@ -77,27 +100,7 @@ function drawHandler(e) {
     }
     drawnItems.addLayer(layer);
     subset = layer;
-    var count = 0;
-    if (e.layerType == "circle") {
-        var center = layer.getLatLng();
-        var radius = layer.getRadius();
-        markers.eachLayer(function(marker) {
-            var markerll = marker.getLatLng();
-            var dist = markerll.distanceTo(center);
-            if (dist <= radius) {
-                count++;
-            }
-        });
-    } else {
-        markers.eachLayer(function(marker) {
-            if (layer.contains(marker.getLatLng())) {
-                count++;
-            }
-        });
-    }
-    console.log(count + " points in ", layer);
-    $("#selected_points").text(count);
-
+    updateSelection();
 }
 
 map.on(L.Draw.Event.CREATED, drawHandler);
@@ -177,6 +180,7 @@ function fetchDataForModel(model, minDate, maxDate) {
                 markerLookup[i] = marker;
             }
         }
+        updateSelection();
     }).fail(function(e) {
         alert("There was an error fetching data for " + model + ": " + e.status + " " + e.statusText);
         console.error(e);
