@@ -31,7 +31,10 @@ var drawControl = new L.Control.Draw({
     draw: {
         polygon: {
             allowIntersection: false,
-            showArea: true
+        },
+        rectangle: {
+            showArea: true,
+            metric: ["km"]
         },
         marker: false,
         circlemarker: false,
@@ -113,7 +116,7 @@ var overlays = {
     "City labels": labels,
 }
 
-L.control.layers(baseMaps, overlays).addTo(map);
+L.control.layers(baseMaps, overlays, { position: 'topleft' }).addTo(map);
 
 var downloadinfo = L.control({position: 'topright'});
 downloadinfo.onAdd = function (map) {
