@@ -82,6 +82,7 @@ function updateSelection() {
     }
     console.log(count + " points in ", subset);
     $("#selected_points").text(count);
+    updateTotalRows();
 }
 
 function drawHandler(e) {
@@ -181,7 +182,12 @@ function fetchDataForModel(model, minDate, maxDate) {
                 markerLookup[i] = marker;
             }
         }
-        updateSelection();
+        if (subset) {
+            updateSelection();
+        } else {
+            $("#selected_points").text(data.results.length);
+            updateTotalRows();
+        }
     }).fail(function(e) {
         alert("There was an error fetching data for " + model + ": " + e.status + " " + e.statusText);
         console.error(e);
@@ -271,11 +277,19 @@ dataset.on('update', function (event, properties) {
     updateSelectedDays();
 });
 
+function updateTotalRows() {
+    var days = $('#selected_days').text();
+    var points = $('#selected_points').text();
+    var total = days * points;
+    $('#total_rows').text(total);
+}
+
 function updateSelectedDays() {
     var start = dataset.get(2).start;
     var end = dataset.get(2).end;
     var days = Math.round((end - start) / ONE_DAY_MS);
     $('#selected_days').text(days);
+    updateTotalRows();
 }
 
 $("#start").change(function() {
