@@ -61,6 +61,7 @@ $("#download_info #control").append($(".leaflet-draw"));
 var markers = L.layerGroup().addTo(map);
 
 function updateSelection() {
+    if (!subset) return;
     var count = 0;
     if (subset.layerType == "circle") {
         var center = subset.getLatLng();
@@ -187,7 +188,8 @@ function fetchDataForModel(model, minDate, maxDate) {
     });
 }
 
-var ONE_YEAR_MS = 1000 * 60 * 60 * 24 * 365;
+var ONE_DAY_MS = 1000 * 60 * 60 * 24;
+var ONE_YEAR_MS = ONE_DAY_MS * 365;
 
 function fetchRangesForModel(model) {
     $.getJSON(baseUrl + "ranges", { model: model }, function(data) {
@@ -266,19 +268,29 @@ dataset.on('update', function (event, properties) {
     console.log(range);
     $("#download_info #start").val(range.start.formatYYYYMMDD());
     $("#download_info #end").val(range.end.formatYYYYMMDD());
+    updateSelectedDays();
 });
 
+function updateSelectedDays() {
+    var start = dataset.get(2).start;
+    var end = dataset.get(2).end;
+    var days = Math.round((end - start) / ONE_DAY_MS);
+    $('#selected_days').text(days);
+}
+
 $("#start").change(function() {
-    console.log(this.value);
     dataset.update({id: 2, start: new Date(this.value), end: dataset.get(2).end});
+    updateSelectedDays();
 });
 
 $("#end").change(function() {
     dataset.update({id: 2, start: dataset.get(2).start, end: new Date(this.value)});
+    updateSelectedDays();
 });
 
 $("#download_info #start").val(dataset.get(2).start.formatYYYYMMDD());
 $("#download_info #end").val(dataset.get(2).end.formatYYYYMMDD());
+updateSelectedDays();
 
 // Configuration for the Timeline
 var options = {
