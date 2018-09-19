@@ -117,7 +117,7 @@ html, body,  #map{
     height: 60px;
 }
 
-.leaflet-draw a,div {
+.leaflet-draw div.leaflet-draw-section,div.leaflet-draw-toolbar>a {
     display: inline-block !important;
 }
 
