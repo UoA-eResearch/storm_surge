@@ -97,7 +97,7 @@ html, body,  #map{
     z-index: 10000;
     max-width: 30%;
     right: 10px;
-    top: 10px;
+    top: 30px;
     position: absolute;
     background-color: black;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -107,13 +107,12 @@ html, body,  #map{
 }
 
 .info {
-    background-color: rgba(0,0,0,.8);
+    background-color: black;
     padding: 15px;
     color: white;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
-    line-height: 20px;
-    max-width: 40%;
+    width: 21%;
 }
 
 .info h3 {
