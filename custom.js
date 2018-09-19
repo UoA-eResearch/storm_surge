@@ -2,7 +2,9 @@ var map = L.map('map', {
     center: [-41.235726,172.5118422],
     zoom: 6,
     minZoom: 5,
+    zoomControl: false
 });
+L.control.zoom({position: 'topright'}).addTo(map);
 var bounds = map.getBounds();
 bounds._northEast.lat += 10;
 bounds._northEast.lng += 10;
@@ -52,6 +54,8 @@ L.drawLocal.edit.toolbar.buttons = {
 }
 
 map.addControl(drawControl);
+
+$("#download_info #control").append($(".leaflet-draw"));
 
 var markers = L.layerGroup().addTo(map);
 
@@ -116,7 +120,7 @@ var overlays = {
     "City labels": labels,
 }
 
-L.control.layers(baseMaps, overlays, { position: 'topleft' }).addTo(map);
+L.control.layers(baseMaps, overlays, { position: 'topright' }).addTo(map);
 
 var legend = L.control({position: 'bottomright'});
 legend.onAdd = function(map) {
