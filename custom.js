@@ -28,7 +28,8 @@ var drawControl = new L.Control.Draw({
         featureGroup: drawnItems,
         poly: {
             allowIntersection: false
-        }
+        },
+        remove: false
     },
     draw: {
         polygon: {
