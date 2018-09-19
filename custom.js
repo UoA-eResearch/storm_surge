@@ -118,28 +118,6 @@ var overlays = {
 
 L.control.layers(baseMaps, overlays, { position: 'topleft' }).addTo(map);
 
-var downloadinfo = L.control({position: 'topright'});
-downloadinfo.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'info downloadinfo');
-    var html = '<select id="model"><option value="Model_20CR">Model 20CR (Past)</option>';
-    var models = ["ACCESS10", "BCC-CSM", "CSIRO", "EC_EARTH", "GFDL", "INM-CM4", "MIROC5"];
-    var submodels = ["Historical", "rcp4.5", "rcp8.5"]
-    for (var i in models) {
-        for (var j in submodels) {
-            var model = models[i];
-            var submodel = submodels[j];
-            var combo = model + " - " + submodel;
-            html += "<option>" + combo + "</option>";
-        }
-    }
-    html += '</select><div id="download_info"><span id="selected_points">0</span> data points selected.<br>Timeseries range: <span id="start"></span>-<span id="end"></span><br><button id="download">Download</button><div id="download_status"></div></div>';
-
-    div.innerHTML = html;
-    div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
-    return div;
-};
-downloadinfo.addTo(map);
-
 var legend = L.control({position: 'bottomright'});
 legend.onAdd = function(map) {
     var div = L.DomUtil.create('div', 'info legend');    var colors = [];
@@ -277,12 +255,21 @@ dataset.on('update', function (event, properties) {
     var range = properties.data[0];
     if (range.id != 2) return;
     console.log(range);
-    $("#download_info #start").text(range.start.formatYYYYMMDD());
-    $("#download_info #end").text(range.end.formatYYYYMMDD());
+    $("#download_info #start").val(range.start.formatYYYYMMDD());
+    $("#download_info #end").val(range.end.formatYYYYMMDD());
 });
 
-$("#download_info #start").text(dataset.get(2).start.formatYYYYMMDD());
-$("#download_info #end").text(dataset.get(2).end.formatYYYYMMDD());
+$("#start").change(function() {
+    console.log(this.value);
+    dataset.update({id: 2, start: new Date(this.value), end: dataset.get(2).end});
+});
+
+$("#end").change(function() {
+    dataset.update({id: 2, start: dataset.get(2).start, end: new Date(this.value)});
+});
+
+$("#download_info #start").val(dataset.get(2).start.formatYYYYMMDD());
+$("#download_info #end").val(dataset.get(2).end.formatYYYYMMDD());
 
 // Configuration for the Timeline
 var options = {

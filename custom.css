@@ -93,16 +93,30 @@ html, body,  #map{
     bottom: 0;
 }
 
-.legend {
+#export {
+    z-index: 10000;
+    max-width: 30%;
+    right: 10px;
+    top: 10px;
+    position: absolute;
+    background-color: black;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    padding: 15px;
+    color: white;
+}
+
+.info {
     background-color: rgba(0,0,0,.8);
     padding: 15px;
     color: white;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
     line-height: 20px;
+    max-width: 40%;
 }
 
-.legend h3 {
+.info h3 {
     margin: 0 0 5px;
 }
 
