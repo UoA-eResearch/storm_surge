@@ -268,15 +268,6 @@ var dataset = new vis.DataSet([
     {id: 2, content: 'Timeseries export range', start: new Date(1871, 0, 1, 12), end: new Date(1900, 0, 1, 12), editable: {updateTime: true, remove: false}}
 ]);
 
-dataset.on('update', function (event, properties) {
-    var range = properties.data[0];
-    if (range.id != 2) return;
-    console.log(range);
-    $("#download_info #start").val(range.start.formatYYYYMMDD());
-    $("#download_info #end").val(range.end.formatYYYYMMDD());
-    updateSelectedDays();
-});
-
 function updateTotalRows() {
     var days = $('#selected_days').text();
     var points = $('#selected_points').text();
@@ -293,12 +284,18 @@ function updateSelectedDays() {
 }
 
 $("#start").change(function() {
-    dataset.update({id: 2, start: new Date(this.value), end: dataset.get(2).end});
+    var bounds = dataset.get(1);
+    var start = new Date(this.value);
+    if (start < bounds.start) start = bounds.start;
+    dataset.update({id: 2, start: start, end: dataset.get(2).end});
     updateSelectedDays();
 });
 
 $("#end").change(function() {
-    dataset.update({id: 2, start: dataset.get(2).start, end: new Date(this.value)});
+    var bounds = dataset.get(1);
+    var end = new Date(this.value);
+    if (end > bounds.end) end = bounds.end;
+    dataset.update({id: 2, start: dataset.get(2).start, end: end});
     updateSelectedDays();
 });
 
@@ -321,7 +318,19 @@ var options = {
     snap: function (date, scale, step) {
         date.setHours(12, 0, 0, 0);
         return date;
-    }
+    },
+    onMoving: function (item, callback) {
+        console.log(item, callback);
+        var bounds = dataset.get(1);
+        if (item.start < bounds.start) item.start = bounds.start;
+        if (item.end > bounds.end) item.end = bounds.end;
+        $("#download_info #start").val(item.start.formatYYYYMMDD());
+        $("#download_info #end").val(item.end.formatYYYYMMDD());
+        dataset.update({id: 2, start: item.start, end: item.end});
+        updateSelectedDays();
+
+        callback(item); // send back the (possibly) changed item
+    },
 };
 
 // Create a Timeline
