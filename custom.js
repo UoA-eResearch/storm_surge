@@ -252,6 +252,9 @@ $("#download").click(function() {
         var elapsed = (new Date() - start) / 1000;
         var pct = Math.round(elapsed / estTime * 100);
         console.log(elapsed, pct);
+        if (pct > 100) {
+            pct = 100;
+        }
         $("#downloadprogress").text(pct + "%");
         $("#downloadprogress").css("width", pct + "%");
         $("#downloadprogress").attr("aria-valuenow", pct);
