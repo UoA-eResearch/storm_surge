@@ -135,6 +135,9 @@ html, body,  #map{
 .leaflet-draw-actions {
     z-index: 10000;
 }
+.leaflet-draw-draw-polygon {
+    margin-right: 4px;
+}
 .info {
     background-color: black;
     padding: 15px;
