@@ -106,6 +106,10 @@ html, body,  #map{
     color: white;
 }
 
+#export a {
+    color: cyan;
+}
+
 #export h4 {
     margin-top: 20px;
 }
