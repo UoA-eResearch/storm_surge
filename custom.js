@@ -446,3 +446,24 @@ $(".vis-panel.vis-bottom").bind('wheel', function (event) {
 $(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="images/pin.svg" title="Current time: ' + new Date() + '"/>');
 
 $('[data-toggle="tooltip"]').tooltip()
+
+var playing = false;
+var playInterval;
+
+$("#play").click(function() {
+    console.log("play");
+    playing = !playing;
+    if (playing) {
+        $("#play i").attr("class", "fas fa-pause");
+        playInterval = setInterval(function() {
+            var ct = timeline.getCustomTime(1);
+            var newTime = new Date(ct.getTime() + ONE_DAY_MS);
+            timeline.setCustomTime(newTime, 1);
+            var dateString = newTime.formatYYYYMMDD() + " 12:00";
+            fetchDataForModel(window.model, dateString);
+        }, 1000);
+    } else {
+        $("#play i").attr("class", "fas fa-play");
+        clearInterval(playInterval);
+    }
+});
