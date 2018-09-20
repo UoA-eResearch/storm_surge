@@ -6,10 +6,11 @@ var map = L.map('map', {
 });
 L.control.zoom({position: 'topright'}).addTo(map);
 var bounds = map.getBounds();
-bounds._northEast.lat += 10;
-bounds._northEast.lng += 10;
-bounds._southWest.lat -= 10;
-bounds._southWest.lng -= 10;
+var degreeLimit = 20;
+bounds._northEast.lat += degreeLimit;
+bounds._northEast.lng += degreeLimit;
+bounds._southWest.lat -= degreeLimit;
+bounds._southWest.lng -= degreeLimit;
 map.setMaxBounds(bounds);
 
 var baseMaps = {
@@ -148,6 +149,40 @@ function getColor(value){
     return "hsl(" + (1 - value) * 250 + ",100%,50%)";
 }
 
+function popupHandler(popup) {
+    console.log(popup);
+    var dt = dataset.get(2);
+    var bounds = Terraformer.WKT.convert(popup.target.toGeoJSON().geometry);
+    var payload = {
+        minDate: dt.start.formatYYYYMMDD() + " 12:00",
+        maxDate: dt.end.formatYYYYMMDD() + " 12:00",
+        model: window.model,
+        bounds: bounds
+    }
+    $.getJSON(baseUrl, payload, function(data) {
+        console.log(data);
+        var container = $("div", popup.popup._contentNode);
+        container.text("");
+        var items = [];
+        for (var i in data.results) {
+            var r = data.results[i];
+            items.push({x: r.datetime, y: r.height});
+        }
+        var dataset = new vis.DataSet(items);
+        var options = {
+            dataAxis: {
+                left: {
+                    title: {
+                        text: 'Storm Surge Height (m)'
+                    }
+                }
+            },
+            drawPoints: false
+        };
+        var graph2d = new vis.Graph2d(container[0], dataset, options);
+    });
+}
+
 var baseUrl = "https://stormsurge.nectar.auckland.ac.nz/storm/";
 var markerLookup = [];
 
@@ -173,12 +208,14 @@ function fetchDataForModel(model, minDate, maxDate) {
         for (var i in data.results) {
             var e = data.results[i];
             var desc = "(" + e.lat + "°," + e.lng + "°): " + e.height.toFixed(dp) + "m";
+            var popup = "<h4>" + e.lat + "°," + e.lng + "°</h4><div id='graph'>Loading...</div>";
             var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
             var color = getColor(normalised_height)
             if (markerLookup[i]) {
                 markerLookup[i].setStyle({color: color}).setTooltipContent(desc);
             } else {
-                var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color, fillOpacity: 1}).addTo(markers).bindTooltip(desc);
+                var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color, fillOpacity: 1})
+                    .addTo(markers).bindTooltip(desc).bindPopup(popup, {minWidth: 800}).on("popupopen", popupHandler);
                 markerLookup[i] = marker;
             }
         }
