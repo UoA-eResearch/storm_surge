@@ -108,6 +108,11 @@ html, body,  #map{
     color: white;
 }
 
+#export small {
+    display: block;
+    margin-bottom: 10px;
+}
+
 #export a {
     color: cyan;
 }
