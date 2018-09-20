@@ -229,6 +229,8 @@ window.model = "Model_20CR";
 
 fetchRangesForModel("Model_20CR")
 
+var interval;
+
 $("#download").click(function() {
     var dt = dataset.get(2);
     var payload = {
@@ -246,7 +248,7 @@ $("#download").click(function() {
     var start = new Date();
     var estTime = parseInt($("#est_time").text());
     clearInterval(interval);
-    var interval = setInterval(function() {
+    interval = setInterval(function() {
         var elapsed = (new Date() - start) / 1000;
         var pct = Math.round(elapsed / estTime * 100);
         console.log(elapsed, pct);
