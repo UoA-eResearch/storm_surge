@@ -246,14 +246,13 @@ $("#download").click(function() {
     $("#statustext").text("Preparing export...");
     $("#downloadprogresswrapper").show();
     var start = new Date();
-    var estTime = parseInt($("#est_time").text());
     clearInterval(interval);
     interval = setInterval(function() {
         var elapsed = (new Date() - start) / 1000;
-        var pct = Math.round(elapsed / estTime * 100);
+        var pct = Math.round(elapsed / window.est_time * 100);
         console.log(elapsed, pct);
-        if (pct > 100) {
-            pct = 100;
+        if (pct > 99) {
+            pct = 99;
         }
         $("#downloadprogress").text(pct + "%");
         $("#downloadprogress").css("width", pct + "%");
@@ -299,13 +298,43 @@ dataset.on('update', function (event, properties) {
 
 var rows_per_sec = 0.002816185242407056;
 
+function secondsToStr (s) {
+    function numberEnding (number) {
+        return (number > 1) ? 's' : '';
+    }
+
+    var years = Math.floor(s / 31536000);
+    if (years) {
+        return years + ' year' + numberEnding(years);
+    }
+    //TODO: Months! Maybe weeks? 
+    var days = Math.floor((s %= 31536000) / 86400);
+    if (days) {
+        return days + ' day' + numberEnding(days);
+    }
+    var hours = Math.floor((s %= 86400) / 3600);
+    if (hours) {
+        return hours + ' hour' + numberEnding(hours);
+    }
+    var minutes = Math.floor((s %= 3600) / 60);
+    if (minutes) {
+        return minutes + ' minute' + numberEnding(minutes);
+    }
+    var seconds = s % 60;
+    if (seconds) {
+        return seconds + ' second' + numberEnding(seconds);
+    }
+    return 'less than a second'; //'just now' //or other string you like;
+}
+
 function updateTotalRows() {
     var days = $('#selected_days').text();
     var points = $('#selected_points').text();
     var total = days * points;
     var est_time = Math.round(total * rows_per_sec);
     $('#total_rows').text(total);
-    $('#est_time').text(est_time);
+    window.est_time = est_time;
+    $('#est_time').text(secondsToStr(est_time));
 }
 
 function updateSelectedDays() {
