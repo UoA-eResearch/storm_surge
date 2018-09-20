@@ -184,9 +184,6 @@ function fetchDataForModel(model, minDate, maxDate) {
         }
         if (subset) {
             updateSelection();
-        } else {
-            $("#selected_points").text(data.results.length);
-            updateTotalRows();
         }
     }).fail(function(e) {
         alert("There was an error fetching data for " + model + ": " + e.status + " " + e.statusText);
@@ -331,6 +328,13 @@ function updateTotalRows() {
     var days = $('#selected_days').text();
     var points = $('#selected_points').text();
     var total = days * points;
+    if (total == 0) {
+        $("#download").attr("disabled", "disabled");
+        $("#est_time_wrapper").hide();
+    } else {
+        $("#download").removeAttr("disabled");
+        $("#est_time_wrapper").show();
+    }
     var est_time = Math.round(total * rows_per_sec);
     $('#total_rows').text(total);
     window.est_time = est_time;
