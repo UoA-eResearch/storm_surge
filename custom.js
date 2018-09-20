@@ -241,6 +241,8 @@ $("#download").click(function() {
         payload.bounds = wkt;
     }
     $("#statustext").text("Preparing export...");
+    $("#download").attr("disabled", "disabled");
+    $("#cancel_download").show();
     $("#downloadprogresswrapper").show();
     var start = new Date();
     clearInterval(interval);
@@ -255,19 +257,30 @@ $("#download").click(function() {
         $("#downloadprogress").css("width", pct + "%");
         $("#downloadprogress").attr("aria-valuenow", pct);
     }, 1000);
-    $.getJSON(baseUrl + "?format=csv", payload, function(data) {
+    window.currentXHR = $.getJSON(baseUrl + "?format=csv", payload, function(data) {
         var url = baseUrl + data.url;
         $("#statustext").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
     }).fail(function(e) {
-        var error = "There was an error exporting data for " + window.model + ": " + e.status + " " + e.statusText;
-        alert(error);
-        $("#statustext").html(error);
+        if (e.statusText != "abort" && e.statusText != "error") {
+            var error = "There was an error exporting data for " + window.model + ": " + e.status + " " + e.statusText;
+            alert(error);
+            $("#statustext").html(error);
+        }
         console.error(e);
     }).always(function(e) {
         $("#downloadprogresswrapper").hide();
         clearInterval(interval);
     });
-})
+});
+
+$("#cancel_download").click(function() {
+    $("#cancel_download").hide();
+    $("#downloadprogresswrapper").hide();
+    $("#download").removeAttr("disabled");
+    $("#statustext").html("Export cancelled");
+    window.currentXHR.abort();
+    clearInterval(interval);
+});
 
 Date.prototype.formatYYYYMMDD = function(){
     var day = ("0" + this.getDate()).slice(-2);
