@@ -459,7 +459,7 @@ $("#play").click(function() {
             var bounds = dataset.get(1);
             var ct = timeline.getCustomTime(1);
             var newTime = new Date(ct.getTime() + ONE_DAY_MS);
-            if (newTime > bounds.end) {
+            if (newTime < bounds.start || newTime > bounds.end) {
                 newTime = bounds.start;
             }
             timeline.setCustomTime(newTime, 1);
