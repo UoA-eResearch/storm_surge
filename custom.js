@@ -45,8 +45,8 @@ var drawControl = new L.Control.Draw({
         circle: false,
     }
 });
-L.drawLocal.draw.toolbar.buttons.polygon = 'Draw a selection polygon';
-L.drawLocal.draw.toolbar.buttons.rectangle = 'Draw a selection rectangle';
+L.drawLocal.draw.toolbar.buttons.polygon = 'Select points in a polygon';
+L.drawLocal.draw.toolbar.buttons.rectangle = 'Select points in a rectangle';
 L.drawLocal.edit.toolbar.buttons = {
     edit: 'Edit selection',
     editDisabled: 'No selection to edit',
