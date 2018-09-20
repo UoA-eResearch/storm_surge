@@ -96,6 +96,8 @@ html, body,  #map{
 #export {
     z-index: 10000;
     max-width: 20%;
+    max-height: 80%;
+    overflow: auto;
     left: 10px;
     top: 100px;
     position: absolute;
