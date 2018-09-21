@@ -284,6 +284,7 @@ $("#download").click(function() {
     }
     $("#statustext").text("Preparing export...");
     $("#download").attr("disabled", "disabled");
+    $("#download").attr("class", "btn btn-secondary");
     $("#cancel_download").show();
     $("#downloadprogresswrapper").show();
     var start = new Date();
@@ -314,6 +315,7 @@ $("#download").click(function() {
         $("#cancel_download").hide();
         $("#downloadprogresswrapper").hide();
         $("#download").removeAttr("disabled");
+        $("#download").attr("class", "btn btn-primary");
         clearInterval(interval);
     });
 });
@@ -322,6 +324,7 @@ $("#cancel_download").click(function() {
     $("#cancel_download").hide();
     $("#downloadprogresswrapper").hide();
     $("#download").removeAttr("disabled");
+    $("#download").attr("class", "btn btn-primary");
     $("#statustext").html("Export cancelled");
     window.currentXHR.abort();
     clearInterval(interval);

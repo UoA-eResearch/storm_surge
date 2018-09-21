@@ -69,27 +69,30 @@
                     <h4>Step 2: Select data points</h4>
                     <small>To select a subset of data points, use the polygon or rectangle tool. Making a new selection will replace the previous selection.</small>
                     <div id="control"></div>
-                    <span id="selected_points">0</span> data points selected.
+                    <h6>
+                        <span id="selected_points">0</span> data points selected.
+                    </h6>
                     <h4>Step 3: Select a time range</h4>
                     <small>Adjust the time range here or by dragging the ends of the timeseries export range control at the bottom.</small>
-                    <div>Timeseries range:</div>
+                    <h6>Timeseries range:</h6>
                     <form class="form-inline">
                         <input id="start" type="date" class="form-control"></input>-
                         <input id="end" type="date" class="form-control"></input>
                     </form>
-                    <br>
-                    <span id="selected_days">0</span> days selected.
-                    <br><br>
-                    <span id="total_rows">0</span> total rows for export. <span id="est_time_wrapper">Estimated (worst-case) time to export: about <span id="est_time">1 minute</span></span>
-                    <br><br>
+                    <h6>
+                        <span id="selected_days">0</span> days selected.
+                    </h6>
+                    <h6>
+                        <span id="total_rows">0</span> total rows for export. <span id="est_time_wrapper">Estimated (worst-case) time to export: about <span id="est_time">1 minute</span></span>
+                    </h6>
                     <button id="download" class="btn btn-primary" disabled>Export</button>
                     <button id="cancel_download" class="btn btn-danger" style="display:none">Cancel</button>
-                    <div id="download_status">
+                    <h6 id="download_status">
                         <div id="downloadprogresswrapper" class="progress" style="display: none">
                             <div id="downloadprogress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0%" aria-valuemin="0%" aria-valuemax="100%" style="width: 0%"></div>
                         </div>
-                        <div id="statustext"></div>
-                    </div>
+                        <h6 id="statustext"></h6>
+                    </h6>
                 </div>
             </div>
         </div>
