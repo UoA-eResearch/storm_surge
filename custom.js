@@ -288,9 +288,10 @@ $("#download").click(function() {
     $("#downloadprogresswrapper").show();
     var start = new Date();
     clearInterval(interval);
+    var est_time_instance = window.est_time;
     interval = setInterval(function() {
         var elapsed = (new Date() - start) / 1000;
-        var pct = Math.round(elapsed / window.est_time * 100);
+        var pct = Math.round(elapsed / est_time_instance * 100);
         console.log(elapsed, pct);
         if (pct > 99) {
             pct = 99;
