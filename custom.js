@@ -305,7 +305,9 @@ $("#download").click(function() {
         }
         console.error(e);
     }).always(function(e) {
+        $("#cancel_download").hide();
         $("#downloadprogresswrapper").hide();
+        $("#download").removeAttr("disabled");
         clearInterval(interval);
     });
 });
