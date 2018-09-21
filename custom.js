@@ -149,6 +149,10 @@ function getColor(value){
     return "hsl(" + (1 - value) * 250 + ",100%,50%)";
 }
 
+function unpack(rows, key) {
+    return rows.map(function(row) { return row[key]; });
+}
+
 function popupHandler(popup) {
     console.log(popup);
     var dt = dataset.get(2);
@@ -163,23 +167,24 @@ function popupHandler(popup) {
         console.log(data);
         var container = $("div", popup.popup._contentNode);
         container.text("");
-        var items = [];
-        for (var i in data.results) {
-            var r = data.results[i];
-            items.push({x: r.datetime, y: r.height});
-        }
-        var dataset = new vis.DataSet(items);
-        var options = {
-            dataAxis: {
-                left: {
-                    title: {
-                        text: 'Storm Surge Height (m)'
-                    }
-                }
+        var data = [{
+            type: "scatter",
+            mode: "lines",
+            name: 'Storm Surge Height',
+            x: unpack(data.results, 'datetime'),
+            y: unpack(data.results, 'height'),
+            line: {color: '#17BECF'}
+        }];
+        var layout = {
+            title: 'Storm surge height over time',
+            xaxis: {
+                title: "Date/Time"
             },
-            drawPoints: false
+            yaxis: {
+                title: "Storm Surge Height (m)"
+            },
         };
-        var graph2d = new vis.Graph2d(container[0], dataset, options);
+        Plotly.newPlot(container[0], data, layout);
     });
 }
 
