@@ -357,6 +357,8 @@ dataset.on('update', function (event, properties) {
     console.log(range);
     $("#download_info #start").val(range.start.formatYYYYMMDD());
     $("#download_info #end").val(range.end.formatYYYYMMDD());
+    $(".vis-drag-left").attr("title", range.start.formatYYYYMMDD());
+    $(".vis-drag-right").attr("title", range.end.formatYYYYMMDD());
     updateSelectedDays();
 });
 
@@ -498,6 +500,9 @@ $(".vis-panel.vis-bottom").bind('wheel', function (event) {
 });
 
 $(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="images/pin.svg" title="Current time: ' + new Date() + '"/>');
+
+$(".vis-drag-left").attr("title", dataset.get(2).start.formatYYYYMMDD());
+$(".vis-drag-right").attr("title", dataset.get(2).end.formatYYYYMMDD());
 
 $('[data-toggle="tooltip"]').tooltip()
 
