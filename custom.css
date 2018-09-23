@@ -181,3 +181,8 @@ html, body,  #map{
 .vis-item-content {
     text-align: center;
 }
+
+#graph {
+    height: 400px;
+    width: 800px;
+}

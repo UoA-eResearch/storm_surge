@@ -2,6 +2,7 @@ var map = L.map('map', {
     center: [-41.235726,172.5118422],
     zoom: 6,
     minZoom: 5,
+    maxZoom: 9,
     zoomControl: false
 });
 L.control.zoom({position: 'topright'}).addTo(map);
@@ -118,7 +119,11 @@ map.on(L.Draw.Event.DELETESTOP, function() {
 map.createPane('labels');
 map.getPane('labels').style.zIndex = 650;
 map.getPane('labels').style.pointerEvents = 'none';
-var labels = L.tileLayer.provider("Stamen.TonerLabels", {pane: "labels"});
+var labels = L.tileLayer.provider("Stamen.TonerLabels", {
+    pane: "labels",
+    interactive: false,
+    opacity: .8,
+});
 labels.addTo(map);
 
 var overlays = {
@@ -212,15 +217,16 @@ function fetchDataForModel(model, minDate, maxDate) {
         $("#colorbar #min").text(minHeight.toFixed(dp) + "m");
         for (var i in data.results) {
             var e = data.results[i];
-            var desc = "(" + e.lat + "°," + e.lng + "°): " + e.height.toFixed(dp) + "m";
-            var popup = "<h4>" + e.lat + "°," + e.lng + "°</h4><div id='graph'>Loading...</div>";
+            var title = "(" + e.lat + "°," + e.lng + "°)";
+            var desc = title + ": " + e.height.toFixed(dp) + "m";
+            var popup = "<h4>" + title + "</h4><div id='graph'>Loading...</div>";
             var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
             var color = getColor(normalised_height)
             if (markerLookup[i]) {
                 markerLookup[i].setStyle({color: color}).setTooltipContent(desc);
             } else {
-                var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color, fillOpacity: 1})
-                    .addTo(markers).bindTooltip(desc).bindPopup(popup, {minWidth: 800}).on("popupopen", popupHandler);
+                var marker = L.circle([e.lat, e.lng], {radius: 8000, color: color, fillOpacity: 1})
+                    .addTo(markers).bindTooltip(desc).bindPopup(popup, {minWidth: 800, autoPanPadding: [100, 100]}).on("popupopen", popupHandler);
                 markerLookup[i] = marker;
             }
         }
