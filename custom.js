@@ -421,6 +421,7 @@ function updateSelectedDays() {
 $("#start").change(function() {
     var bounds = dataset.get(1);
     var start = new Date(this.value);
+    if (start == "Invalid Date") return;
     if (start < bounds.start) start = bounds.start;
     if (start > bounds.end - ONE_DAY_MS) start = new Date(bounds.end - ONE_DAY_MS);
     dataset.update({id: 2, start: start, end: dataset.get(2).end});
@@ -430,6 +431,7 @@ $("#start").change(function() {
 $("#end").change(function() {
     var bounds = dataset.get(1);
     var end = new Date(this.value);
+    if (end == "Invalid Date") return;
     if (end > bounds.end) end = bounds.end;
     if (end < bounds.start.getTime() + ONE_DAY_MS) end = new Date(bounds.start.getTime() + ONE_DAY_MS);
     dataset.update({id: 2, start: dataset.get(2).start, end: end});
