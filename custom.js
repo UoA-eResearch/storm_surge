@@ -7,8 +7,8 @@ var map = L.map('map', {
 });
 L.control.zoom({position: 'topright'}).addTo(map);
 var bounds = map.getBounds();
-var degreeLimit = 20;
-bounds._northEast.lat += degreeLimit;
+var degreeLimit = 10;
+bounds._northEast.lat += degreeLimit * 3;
 bounds._northEast.lng += degreeLimit;
 bounds._southWest.lat -= degreeLimit;
 bounds._southWest.lng -= degreeLimit;
@@ -226,7 +226,7 @@ function fetchDataForModel(model, minDate, maxDate) {
                 markerLookup[i].setStyle({color: color}).setTooltipContent(desc);
             } else {
                 var marker = L.circle([e.lat, e.lng], {radius: 8000, color: color, fillOpacity: 1})
-                    .addTo(markers).bindTooltip(desc).bindPopup(popup, {minWidth: 800, autoPanPadding: [100, 100]}).on("popupopen", popupHandler);
+                    .addTo(markers).bindTooltip(desc).bindPopup(popup, {minWidth: 800, autoPanPadding: [400, 100]}).on("popupopen", popupHandler);
                 markerLookup[i] = marker;
             }
         }
