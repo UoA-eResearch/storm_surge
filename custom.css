@@ -6,7 +6,7 @@ html, body,  #map{
     font: 14px/16px Arial, Helvetica, sans-serif;
 }
 #map {
-    height: 80%;
+    height: calc(100% - 138px);
 }
 #title {
     position: absolute;
@@ -50,7 +50,7 @@ html, body,  #map{
 }
 #curDateImg{
     position: fixed;
-    bottom: 19%;
+    bottom: 130px;
     z-index: 10000;
     width: 2em;
     height: 3em;
@@ -63,7 +63,7 @@ html, body,  #map{
 #timeline {
     position: absolute;
     width: 100%;
-    height: 20%;
+    height: 138px;
     overflow: hidden;
     bottom: 0;
     z-index: 1000;
