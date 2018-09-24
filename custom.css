@@ -166,9 +166,9 @@ html, body,  #map{
     margin-right: 4px;
 }
 .info {
-    background-color: black;
+    background-color: white;
     padding: 15px;
-    color: white;
+    color: black;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
     width: 130px;

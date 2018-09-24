@@ -2,7 +2,7 @@ var map = L.map('map', {
     center: [-41.235726,172.5118422],
     zoom: 6,
     minZoom: 5,
-    maxZoom: 9,
+    maxZoom: 13,
     zoomControl: false
 });
 L.control.zoom({position: 'topright'}).addTo(map);
@@ -13,6 +13,21 @@ bounds._northEast.lng += degreeLimit;
 bounds._southWest.lat -= degreeLimit;
 bounds._southWest.lng -= degreeLimit;
 map.setMaxBounds(bounds);
+
+var colors = {
+    "1": [127, 0, 0],
+    "0.8": [255, 0, 0],
+    "0.6": [255, 127, 0],
+    "0.4": [255, 255, 0],
+    "0.2": [255, 255, 127],
+    "0": [255, 255, 255],
+    "-0.2": [127, 255, 255],
+    "-0.4": [0, 255, 255],
+    "-0.6": [0, 127, 255],
+    "-0.8": [0, 0, 255],
+    "-1": [0, 0, 127]
+}
+var colorKey = Object.keys(colors).map(parseFloat).sort(function (a, b) {  return a - b;  });
 
 var baseMaps = {
     "CartoDB Positron": L.tileLayer.provider('CartoDB.PositronNoLabels'),
@@ -136,13 +151,8 @@ L.control.layers(baseMaps, overlays, { position: 'topright' }).addTo(map);
 
 var legend = L.control({position: 'bottomright'});
 legend.onAdd = function(map) {
-    var div = L.DomUtil.create('div', 'info legend');    var colors = [];
-    for (var i = 1; i >= 0; i -= .1) {
-        colors.push(getColor(i));
-    }
-    var colorbar = '<h3>Legend</h3><div id="colorbar"><div id="gradient" style="background-image: linear-gradient(' + colors.join(",") + ');"></div>';
-    colorbar += '<div id="max" class="label">0.0725m</div><div id="mid" class="label">0.0527m</div><div id="min" class="label">-0.0328m</div>';
-    colorbar += '</div>';
+    var div = L.DomUtil.create('div', 'info legend');
+    var colorbar = '<h3>Legend</h3><img src="images/legend.png"/>';
     div.innerHTML = colorbar;
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
@@ -150,8 +160,26 @@ legend.onAdd = function(map) {
 legend.addTo(map);
 
 function getColor(value){
-    //value from 0 to 1
-    return "hsl(" + (1 - value) * 250 + ",100%,50%)";
+    if (value <= colorKey[0]) {
+        var color = colors[colorKey[0]];
+        return "rgb(" + color.join(",") + ")";
+    } else if (value >= colorKey[colorKey.length - 1]) {
+        var color = colors[colorKey[colorKey.length - 1]];
+        return "rgb(" + color.join(",") + ")";
+    }
+    for (var i = 0; i < colorKey.length - 1; i++) {
+        var low = colorKey[i];
+        var high = colorKey[i + 1];
+        if (value >= low && value <= high) {
+            var lowC = colors[low];
+            var highC = colors[high];
+            var factor = (value - low) / (high - low);
+            var r = lowC[0] + (highC[0] - lowC[0]) * factor;
+            var g = lowC[1] + (highC[1] - lowC[1]) * factor;
+            var b = lowC[2] + (highC[2] - lowC[2]) * factor;
+            return "rgb(" + r + "," + g + "," + b + ")";
+        }
+    }
 }
 
 function unpack(rows, key) {
@@ -204,28 +232,17 @@ function fetchDataForModel(model, minDate, maxDate) {
     $.getJSON(baseUrl, { model: model, minDate: minDate, maxDate: maxDate }, function(data) {
         console.log("Got " + data.results.length + " results for " + model);
         if (data.results.length == 0) return;
-        var minHeight = Infinity;
-        var maxHeight = -Infinity;
-        for (var i in data.results) {
-            var e = data.results[i];
-            if (e.height < minHeight) minHeight = e.height;
-            if (e.height > maxHeight) maxHeight = e.height;
-        }
         var dp = 4;
-        $("#colorbar #max").text(maxHeight.toFixed(dp) + "m");
-        $("#colorbar #mid").text(((maxHeight - minHeight) / 2).toFixed(dp) + "m");
-        $("#colorbar #min").text(minHeight.toFixed(dp) + "m");
         for (var i in data.results) {
             var e = data.results[i];
             var title = "(" + e.lat + "°," + e.lng + "°)";
             var desc = title + ": " + e.height.toFixed(dp) + "m";
             var popup = "<h4>" + title + "</h4><div id='graph'>Loading...</div>";
-            var normalised_height = (e.height - minHeight) / (maxHeight - minHeight);
-            var color = getColor(normalised_height)
+            var color = getColor(e.height);
             if (markerLookup[i]) {
                 markerLookup[i].setStyle({color: color}).setTooltipContent(desc);
             } else {
-                var marker = L.circle([e.lat, e.lng], {radius: 8000, color: color, fillOpacity: 1})
+                var marker = L.circleMarker([e.lat, e.lng], {radius: 4, color: color, fillOpacity: 1})
                     .addTo(markers).bindTooltip(desc).bindPopup(popup, {minWidth: 800, autoPanPadding: [400, 100]}).on("popupopen", popupHandler);
                 markerLookup[i] = marker;
             }
