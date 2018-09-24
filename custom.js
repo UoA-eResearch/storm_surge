@@ -6,6 +6,8 @@ var map = L.map('map', {
     zoomControl: false
 });
 L.control.zoom({position: 'topright'}).addTo(map);
+map.doubleClickZoom.disable();
+
 var bounds = map.getBounds();
 var degreeLimit = 10;
 bounds._northEast.lat += degreeLimit * 3;
@@ -462,7 +464,7 @@ $("#start").change(function() {
     var bounds = dataset.get(1);
     var start = new Date(this.value);
     if (start == "Invalid Date") return;
-    if (start < bounds.start) start = bounds.start;
+    if (start < bounds.start) return;
     if (start > bounds.end - ONE_DAY_MS) start = new Date(bounds.end - ONE_DAY_MS);
     dataset.update({id: 2, start: start, end: dataset.get(2).end});
     updateSelectedDays();
@@ -473,7 +475,7 @@ $("#end").change(function() {
     var end = new Date(this.value);
     if (end == "Invalid Date") return;
     if (end > bounds.end) end = bounds.end;
-    if (end < bounds.start.getTime() + ONE_DAY_MS) end = new Date(bounds.start.getTime() + ONE_DAY_MS);
+    if (end < bounds.start.getTime() + ONE_DAY_MS) return;
     dataset.update({id: 2, start: dataset.get(2).start, end: end});
     updateSelectedDays();
 });
