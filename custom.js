@@ -152,7 +152,13 @@ L.control.layers(baseMaps, overlays, { position: 'topright' }).addTo(map);
 var legend = L.control({position: 'bottomright'});
 legend.onAdd = function(map) {
     var div = L.DomUtil.create('div', 'info legend');
-    var colorbar = '<h3>Legend</h3><img src="images/legend.png"/>';
+    var colors = [];
+    for (var i = 1; i >= -1; i -= .2) {
+        colors.push(getColor(i));
+    }
+    var colorbar = '<h3>Legend</h3><div id="colorbar"><div id="gradient" style="background-image: linear-gradient(' + colors.join(",") + ');"></div>';
+    colorbar += '<div id="max" class="label">1m</div><div id="mid" class="label">0m</div><div id="min" class="label">-1m</div>';
+    colorbar += '</div>';
     div.innerHTML = colorbar;
     div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
     return div;
@@ -232,13 +238,29 @@ function fetchDataForModel(model, minDate, maxDate) {
     $.getJSON(baseUrl, { model: model, minDate: minDate, maxDate: maxDate }, function(data) {
         console.log("Got " + data.results.length + " results for " + model);
         if (data.results.length == 0) return;
+        var minHeight = Infinity;
+        var maxHeight = -Infinity;
+        for (var i in data.results) {
+            var e = data.results[i];
+            if (e.height < minHeight) minHeight = e.height;
+            if (e.height > maxHeight) maxHeight = e.height;
+        }
+        if (minHeight < -maxHeight) {
+            maxHeight = -minHeight;
+        }
+        if (maxHeight > -minHeight) {
+            minHeight = -maxHeight;
+        }
         var dp = 4;
+        $("#colorbar #max").text(maxHeight.toFixed(dp) + "m");
+        $("#colorbar #min").text(minHeight.toFixed(dp) + "m");
         for (var i in data.results) {
             var e = data.results[i];
             var title = "(" + e.lat + "°," + e.lng + "°)";
             var desc = title + ": " + e.height.toFixed(dp) + "m";
             var popup = "<h4>" + title + "</h4><div id='graph'>Loading...</div>";
-            var color = getColor(e.height);
+            var normalised_height = 2 * (e.height - minHeight) / (maxHeight - minHeight) - 1;
+            var color = getColor(normalised_height);
             if (markerLookup[i]) {
                 markerLookup[i].setStyle({color: color}).setTooltipContent(desc);
             } else {
