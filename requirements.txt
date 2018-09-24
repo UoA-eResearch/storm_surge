@@ -4,3 +4,4 @@ pandas
 numpy
 bottle
 bottle-mysql
+mysqlclient
