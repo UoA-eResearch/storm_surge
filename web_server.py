@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from bottle import Bottle, request, response, static_file
+from bottle import Bottle, request, response, static_file, run
 import bottle_mysql
 import csv
 import os
@@ -15,6 +15,7 @@ plugin = bottle_mysql.Plugin(dbuser='storm_ro', dbpass='storm', dbname='storm')
 application.install(plugin)
 
 submodels = ["Historical", "rcp4.5", "rcp8.5"]
+submodelExportNames = ["HIST", "rcp45", "rcp85"]
 
 @application.hook('after_request')
 def enable_cors():
@@ -52,15 +53,27 @@ def get(db):
     print("{}s - {} results fetched".format(time.time() - s, len(results)))
     response_format = request.params.get('format', 'json')
     if response_format == 'csv':
-        dt = datetime.now().isoformat()
-        filename = "{}_export_{}.csv".format(model, dt)
+        latlng = bounds.split(",")[1].strip().split(" ")
+        lng = float(latlng[0])
+        lat = float(latlng[1])
+        latS = "{0:05.1f}".format(abs(lat)).replace(".","")
+        lngS = "{0:05.1f}".format(abs(lng)).replace(".","")
+        if lat < 0:
+            latS += "S"
+        else:
+            latS += "N"
+        if lng < 0:
+            lngS += "W"
+        else:
+            lngS += "E"
+        filename = "{}-{}-{}-{}-{}{}.csv".format(model, submodelExportNames[submodel], minDate[:minDate.index(" ")].replace("-", ""), maxDate[:maxDate.index(" ")].replace("-", ""), lngS, latS)
         filename_with_path = os.path.join("exports", filename)
         with open(filename_with_path, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=["lat", "lng", "datetime", "height"])
             writer.writeheader()
             writer.writerows(results)
         print("{}s - csv written".format(time.time() - s))
-        zipfilename = filename_with_path + ".zip"
+        zipfilename = filename_with_path.replace(".csv", ".zip")
         with ZipFile(zipfilename, "w", ZIP_DEFLATED) as zip:
             zip.write(filename_with_path, filename)
         print("{}s - zip written".format(time.time() - s))
@@ -105,3 +118,6 @@ def get_ranges(db):
     maxDate = db.fetchone()
     result.update(maxDate)
     return result
+
+if __name__ == "__main__":
+    run(application, host='localhost', port=8081, debug=True)
