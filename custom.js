@@ -267,6 +267,7 @@ function fetchRangesForModel(model) {
         var ct = timeline.getCustomTime(1);
         if (ct < start || ct > end) {
             timeline.setCustomTime(start, 1);
+            timeline.setCustomTimeTitle("Drag this control to display the storm surge data for a specific date. Current time: " + start.formatYYYYMMDD() + " 12:00", 1);
             timeline.setWindow(start.getTime() - ONE_YEAR_MS, end.getTime() + ONE_YEAR_MS);
         }
         var dateRange = dataset.get(2);
@@ -374,8 +375,8 @@ dataset.on('update', function (event, properties) {
     console.log(range);
     $("#download_info #start").val(range.start.formatYYYYMMDD());
     $("#download_info #end").val(range.end.formatYYYYMMDD());
-    $(".vis-drag-left").attr("title", range.start.formatYYYYMMDD());
-    $(".vis-drag-right").attr("title", range.end.formatYYYYMMDD());
+    $(".vis-drag-left").attr("title", "Export range control: click and drag to define the beginning of the time series you want to export. Currently set to " + range.start.formatYYYYMMDD());
+    $(".vis-drag-right").attr("title", "Export range control: click and drag to define the end of the time series you want to export. Currently set to " + range.end.formatYYYYMMDD());
     updateSelectedDays();
 });
 
@@ -505,6 +506,7 @@ timeline.on('timechanged', function(e) {
     e.time.setHours(12, 0, 0, 0);
     timeline.setCustomTime(e.time, 1);
     var dateString = e.time.formatYYYYMMDD() + " 12:00";
+    timeline.setCustomTimeTitle("Drag this control to display the storm surge data for a specific date. Current time: " + dateString, 1);
     console.log("timechange", e, dateString);
     fetchDataForModel(window.model, dateString);
 });
@@ -520,8 +522,12 @@ $(".vis-panel.vis-bottom").bind('wheel', function (event) {
 
 $(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="images/pin.svg" title="Current time: ' + new Date() + '"/>');
 
-$(".vis-drag-left").attr("title", dataset.get(2).start.formatYYYYMMDD());
-$(".vis-drag-right").attr("title", dataset.get(2).end.formatYYYYMMDD());
+var range = dataset.get(2);
+
+timeline.setCustomTimeTitle("Drag this control to display the storm surge data for a specific date", 1)
+
+$(".vis-drag-left").attr("title", "Export range control: click and drag to define the beginning of the time series you want to export. Currently set to " + range.start.formatYYYYMMDD());
+$(".vis-drag-right").attr("title", "Export range control: click and drag to define the end of the time series you want to export. Currently set to " + range.end.formatYYYYMMDD());
 
 $('[data-toggle="tooltip"]').tooltip()
 
@@ -542,6 +548,7 @@ $("#play").click(function() {
             }
             timeline.setCustomTime(newTime, 1);
             var dateString = newTime.formatYYYYMMDD() + " 12:00";
+            timeline.setCustomTimeTitle("Drag this control to display the storm surge data for a specific date. Current time: " + dateString, 1);
             fetchDataForModel(window.model, dateString);
         }, 1000);
     } else {
