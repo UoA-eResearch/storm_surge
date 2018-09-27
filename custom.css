@@ -94,7 +94,7 @@ html, body,  #map{
 #export {
     z-index: 10000;
     max-width: 20%;
-    max-height: calc(100% - 10px);
+    max-height: calc(100% - 90px);
     overflow: auto;
     left: 10px;
     top: 80px;
