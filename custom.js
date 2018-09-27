@@ -41,6 +41,9 @@ baseMaps["CartoDB Positron"].addTo(map);
 
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
+shapeOptions = {
+    fillOpacity: .2
+}
 var subset;
 var drawControl = new L.Control.Draw({
     edit: {
@@ -53,10 +56,12 @@ var drawControl = new L.Control.Draw({
     draw: {
         polygon: {
             allowIntersection: false,
+            shapeOptions: shapeOptions
         },
         rectangle: {
             showArea: true,
-            metric: ["km"]
+            metric: ["km"],
+            shapeOptions: shapeOptions
         },
         marker: false,
         circlemarker: false,
@@ -116,6 +121,7 @@ function drawHandler(e) {
         layer = e.layer;
     }
     console.log(layer);
+    layer.options.interactive = false;
     if (subset) {
         drawnItems.removeLayer(subset);
     }
