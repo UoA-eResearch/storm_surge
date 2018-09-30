@@ -336,6 +336,7 @@ $("#download").click(function() {
         console.log(wkt);
         payload.bounds = wkt;
     }
+    ga('send', 'event', 'Export', 'request', JSON.stringify(payload));
     $("#statustext").text("Preparing export...");
     $("#download").attr("disabled", "disabled");
     $("#download").attr("class", "btn btn-secondary");
@@ -358,11 +359,16 @@ $("#download").click(function() {
     window.currentXHR = $.getJSON(baseUrl + "?format=csv", payload, function(data) {
         var url = baseUrl + data.url;
         $("#statustext").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
+        $("#statustext a").click(function() {
+            ga('send', 'event', 'Export', 'download', url);
+        });
+        ga('send', 'event', 'Export', 'ready', url);
     }).fail(function(e) {
         if (e.statusText != "abort" && e.statusText != "error") {
             var error = "There was an error exporting data for " + window.model + ": " + e.status + " " + e.statusText;
             alert(error);
             $("#statustext").html(error);
+            ga('send', 'event', 'Export', 'error', e.statusText);
         }
         console.error(e);
     }).always(function(e) {
