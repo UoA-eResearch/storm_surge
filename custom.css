@@ -16,12 +16,11 @@ html, body,  #map{
     width: 20%;
     font-size: 2em;
     text-align: center;
-    color: white;
+    color: black;
     border-radius: 5px;
     padding: 10px;
-    background-color: rgba(0, 0, 0, 1);
+    background-color: white;
     font-family: Arial, Helvetica, sans-serif;
-    text-shadow: 2px 2px #000000;
     font-weight: normal;
 }
 .vis-current-time {
@@ -100,11 +99,10 @@ html, body,  #map{
     left: 10px;
     top: 80px;
     position: absolute;
-    background-color: black;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    background-color: white;
     border-radius: 5px;
     padding: 15px;
-    color: white;
+    color: black;
 }
 
 #export h6 {
@@ -115,14 +113,6 @@ html, body,  #map{
 #export small {
     display: block;
     margin-top: 10px;
-}
-
-#export small a {
-    color: cyan;
-}
-
-#statustext a {
-    color: cyan;
 }
 
 .leaflet-draw-actions a {
@@ -163,11 +153,13 @@ html, body,  #map{
 }
 .leaflet-draw-draw-polygon {
     margin-right: 4px;
+    border-bottom: none !important;
+    border-right: 1px solid #ccc;
 }
 .info {
-    background-color: black;
+    background-color: white;
     padding: 15px;
-    color: white;
+    color: black;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
     width: 130px;
