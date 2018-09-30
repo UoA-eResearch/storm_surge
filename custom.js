@@ -140,7 +140,7 @@ map.on(L.Draw.Event.DELETESTOP, function() {
 
 
 map.createPane('labels');
-map.getPane('labels').style.zIndex = 650;
+map.getPane('labels').style.zIndex = 625;
 map.getPane('labels').style.pointerEvents = 'none';
 var labels = L.tileLayer.provider("Stamen.TonerLabels", {
     pane: "labels",
