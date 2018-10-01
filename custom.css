@@ -131,7 +131,7 @@ html, body,  #map{
 }
 
 #downloadprogress {
-    color: black;
+    color: white;
 }
 
 .leaflet-control-layers-toggle {

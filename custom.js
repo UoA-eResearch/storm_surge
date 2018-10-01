@@ -42,7 +42,10 @@ baseMaps["CartoDB Positron"].addTo(map);
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 shapeOptions = {
-    fillOpacity: .2
+    fillOpacity: .2,
+    fillColor: "black",
+    color: "black",
+    opacity: 1
 }
 var subset;
 var drawControl = new L.Control.Draw({
