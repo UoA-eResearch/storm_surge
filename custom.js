@@ -332,7 +332,7 @@ function fetchRangesForModel(model) {
             timeline.setWindow(start.getTime() - ONE_YEAR_MS, end.getTime() + ONE_YEAR_MS);
         }
         var dateRange = dataset.get(2);
-        if (dateRange.end < start || dateRange.start > end) {
+        if (dateRange.start < start || dateRange.end > end) {
             dataset.update({id: 2, start: start, end: end});
         }
         fetchDataForModel(model, data.minDate);
