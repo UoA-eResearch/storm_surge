@@ -134,6 +134,13 @@ function drawHandler(e) {
 }
 
 map.on(L.Draw.Event.CREATED, drawHandler);
+map.on(L.Draw.Event.EDITSTART, function() {
+    console.log("editstart");
+    var drawBounds = drawnItems.getBounds();
+    if (!map.getBounds().contains(drawBounds)) {
+        map.flyToBounds(drawBounds);
+    }
+});
 map.on(L.Draw.Event.EDITED, drawHandler);
 map.on(L.Draw.Event.DELETESTOP, function() {
     subset = null;
@@ -372,6 +379,9 @@ $("#download").click(function() {
     var start = new Date();
     clearInterval(interval);
     var est_time_instance = window.est_time;
+    $("#downloadprogress").text("0%");
+    $("#downloadprogress").css("width", "0%");
+    $("#downloadprogress").attr("aria-valuenow", 0);
     interval = setInterval(function() {
         var elapsed = (new Date() - start) / 1000;
         var pct = Math.round(elapsed / est_time_instance * 100);
@@ -452,7 +462,7 @@ dataset.on('update', function (event, properties) {
     updateSelectedDays();
 });
 
-var rows_per_sec = 0.002816185242407056;
+var rows_per_sec = 0.003255148915457394;
 
 function secondsToStr (s) {
     function numberEnding (number) {
