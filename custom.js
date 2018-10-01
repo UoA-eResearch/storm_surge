@@ -200,6 +200,8 @@ function unpack(rows, key) {
     return rows.map(function(row) { return row[key]; });
 }
 
+var chartProgressInterval;
+
 function popupHandler(popup) {
     console.log(popup);
     var dt = dataset.get(2);
@@ -210,9 +212,25 @@ function popupHandler(popup) {
         model: window.model,
         bounds: bounds
     }
+    var start = new Date();
+    var days = $('#selected_days').text();
+    var est_time_instance = Math.round(days * rows_per_sec);
+    clearInterval(chartProgressInterval);
+    chartProgressInterval = setInterval(function() {
+        var elapsed = (new Date() - start) / 1000;
+        var pct = Math.round(elapsed / est_time_instance * 100);
+        console.log(elapsed, pct);
+        if (pct > 99) {
+            pct = 99;
+        }
+        $("#chartprogress", popup.popup._contentNode).text(pct + "%");
+        $("#chartprogress", popup.popup._contentNode).css("width", pct + "%");
+        $("#chartprogress", popup.popup._contentNode).attr("aria-valuenow", pct);
+    }, 1000);
     $.getJSON(baseUrl, payload, function(data) {
         console.log(data);
-        var container = $("div", popup.popup._contentNode);
+        var container = $("#graph", popup.popup._contentNode);
+        clearInterval(chartProgressInterval);
         container.text("");
         var data = [{
             type: "scatter",
@@ -266,7 +284,10 @@ function fetchDataForModel(model, minDate, maxDate) {
             var e = data.results[i];
             var title = "(" + e.lat + "°," + e.lng + "°)";
             var desc = title + ": " + e.height.toFixed(dp) + "m";
-            var popup = "<h4>" + title + "</h4><div id='graph'>Loading...</div>";
+            var progress = '<div class="progress">';
+            progress += '<div id="chartprogress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0%" aria-valuemin="0%" aria-valuemax="100%" style="width: 0%">';
+            progress += '</div></div><h6>Loading...</h6>'
+            var popup = '<h4>' + title + '</h4><div id="graph">' + progress + '</div>';
             var normalised_height = 2 * (e.height - minHeight) / (maxHeight - minHeight) - 1;
             var color = getColor(normalised_height);
             if (markerLookup[i]) {
