@@ -212,6 +212,27 @@ function unpack(rows, key) {
 
 var chartProgressInterval;
 
+function plotData(container, results) {
+    var data = [{
+        type: "scatter",
+        mode: "lines",
+        name: 'Storm Surge Height',
+        x: unpack(results, 'datetime'),
+        y: unpack(results, 'height'),
+        line: {color: '#17BECF'}
+    }];
+    var layout = {
+        title: 'Storm surge height over time',
+        xaxis: {
+            title: "Date/Time"
+        },
+        yaxis: {
+            title: "Storm Surge Height (m)"
+        },
+    };
+    Plotly.newPlot(container[0], data, layout);
+}
+
 function popupHandler(popup) {
     console.log(popup);
     var dt = dataset.get(2);
@@ -222,48 +243,51 @@ function popupHandler(popup) {
         model: window.model,
         bounds: bounds
     }
-    var start = new Date();
-    var days = $('#selected_days').text();
-    var est_time_instance = Math.round(days * rows_per_sec);
-    clearInterval(chartProgressInterval);
-    chartProgressInterval = setInterval(function() {
-        var elapsed = (new Date() - start) / 1000;
-        var pct = Math.round(elapsed / est_time_instance * 100);
-        console.log(elapsed, pct);
-        if (pct > 99) {
-            pct = 99;
-        }
-        $("#chartprogress", popup.popup._contentNode).text(pct + "%");
-        $("#chartprogress", popup.popup._contentNode).css("width", pct + "%");
-        $("#chartprogress", popup.popup._contentNode).attr("aria-valuenow", pct);
-    }, 1000);
-    $.getJSON(baseUrl, payload, function(data) {
-        console.log(data);
-        var container = $("#graph", popup.popup._contentNode);
-        clearInterval(chartProgressInterval);
-        container.text("");
-        var data = [{
-            type: "scatter",
-            mode: "lines",
-            name: 'Storm Surge Height',
-            x: unpack(data.results, 'datetime'),
-            y: unpack(data.results, 'height'),
-            line: {color: '#17BECF'}
-        }];
-        var layout = {
-            title: 'Storm surge height over time',
-            xaxis: {
-                title: "Date/Time"
-            },
-            yaxis: {
-                title: "Storm Surge Height (m)"
-            },
+    var container = $("#graph", popup.popup._contentNode);
+
+    try {
+        var ws = new WebSocket(wsUrl);
+        ws.onopen = function() {
+            ws.send(JSON.stringify(payload));
         };
-        Plotly.newPlot(container[0], data, layout);
-    });
+        ws.onmessage = function (evt) {
+            var data = JSON.parse(evt.data);
+            console.log(data);
+            if ('progress' in data) {
+                var pct = Math.round(data.progress * 100);
+                $("#chartprogress", popup.popup._contentNode).text(pct + "%");
+                $("#chartprogress", popup.popup._contentNode).css("width", pct + "%");
+                $("#chartprogress", popup.popup._contentNode).attr("aria-valuenow", pct);
+            } else {
+                container.text("");
+                plotData(container, data.results);
+                ws.close();
+            }
+        };
+    } catch {
+        var start = new Date();
+        var days = $('#selected_days').text();
+        var est_time_instance = Math.round(days * rows_per_sec);
+        clearInterval(chartProgressInterval);
+        chartProgressInterval = setInterval(function() {
+            var elapsed = (new Date() - start) / 1000;
+            var pct = Math.round(elapsed / est_time_instance * 100);
+            console.log(elapsed, pct);
+            if (pct > 99) {
+                pct = 99;
+            }
+        }, 1000);
+        $.getJSON(baseUrl, payload, function(data) {
+            console.log(data);
+            clearInterval(chartProgressInterval);
+            container.text("");
+            plotData(container, data.results);
+        });
+    }
 }
 
 var baseUrl = "https://stormsurge.nectar.auckland.ac.nz/storm/";
+var wsUrl = "wss://stormsurge.nectar.auckland.ac.nz/storm/websocket";
 var markerLookup = [];
 
 function fetchDataForModel(model, minDate, maxDate) {
@@ -361,6 +385,7 @@ $("#download").click(function() {
         minDate: dt.start.formatYYYYMMDD() + " 12:00",
         maxDate: dt.end.formatYYYYMMDD() + " 12:00",
         model: window.model,
+        format: "csv"
     }
     if (subset) {
         wkt = Terraformer.WKT.convert(subset.toGeoJSON().geometry);
@@ -375,55 +400,90 @@ $("#download").click(function() {
     $("#download").attr("disabled", "disabled");
     $("#download").attr("class", "btn btn-secondary");
     $("#cancel_download").show();
-    $("#downloadprogresswrapper").show();
-    var start = new Date();
-    clearInterval(interval);
-    var est_time_instance = window.est_time;
     $("#downloadprogress").text("0%");
     $("#downloadprogress").css("width", "0%");
     $("#downloadprogress").attr("aria-valuenow", 0);
-    interval = setInterval(function() {
-        var elapsed = (new Date() - start) / 1000;
-        var pct = Math.round(elapsed / est_time_instance * 100);
-        console.log(elapsed, pct);
-        if (pct > 99) {
-            pct = 99;
-        }
-        $("#downloadprogress").text(pct + "%");
-        $("#downloadprogress").css("width", pct + "%");
-        $("#downloadprogress").attr("aria-valuenow", pct);
-    }, 1000);
-    window.currentXHR = $.getJSON(baseUrl + "?format=csv", payload, function(data) {
-        var url = baseUrl + data.url;
-        $("#statustext").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
-        $("#statustext a").click(function() {
-            gtag('event', 'download', {
+    $("#downloadprogresswrapper").show();
+    try {
+        window.ws = new WebSocket(wsUrl);
+        window.ws.onopen = function() {
+            ws.send(JSON.stringify(payload));
+        };
+        window.ws.onmessage = function (evt) {
+            var data = JSON.parse(evt.data);
+            console.log(data);
+            if ('progress' in data) {
+                var pct = Math.round(data.progress * 100);
+                $("#downloadprogress").text(pct + "%");
+                $("#downloadprogress").css("width", pct + "%");
+                $("#downloadprogress").attr("aria-valuenow", pct);
+            } else {
+                var url = baseUrl + data.url;
+                $("#statustext").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
+                $("#statustext a").click(function() {
+                    gtag('event', 'download', {
+                        'event_category': 'export',
+                        'event_label': url
+                    });
+                });
+                gtag('event', 'ready', {
+                    'event_category': 'export',
+                    'event_label': url
+                });
+                $("#cancel_download").hide();
+                $("#downloadprogresswrapper").hide();
+                $("#download").removeAttr("disabled");
+                $("#download").attr("class", "btn btn-primary");
+                ws.close();
+            }
+        };
+    } catch {
+        var start = new Date();
+        clearInterval(interval);
+        var est_time_instance = window.est_time;
+        interval = setInterval(function() {
+            var elapsed = (new Date() - start) / 1000;
+            var pct = Math.round(elapsed / est_time_instance * 100);
+            console.log(elapsed, pct);
+            if (pct > 99) {
+                pct = 99;
+            }
+            $("#downloadprogress").text(pct + "%");
+            $("#downloadprogress").css("width", pct + "%");
+            $("#downloadprogress").attr("aria-valuenow", pct);
+        }, 1000);
+        window.currentXHR = $.getJSON(baseUrl, payload, function(data) {
+            var url = baseUrl + data.url;
+            $("#statustext").html('Your export is ready for download - please click <a href="' + url + '">here</a> to download');
+            $("#statustext a").click(function() {
+                gtag('event', 'download', {
+                    'event_category': 'export',
+                    'event_label': url
+                });
+            });
+            gtag('event', 'ready', {
                 'event_category': 'export',
                 'event_label': url
             });
+        }).fail(function(e) {
+            if (e.statusText != "abort" && e.statusText != "error") {
+                var error = "There was an error exporting data for " + window.model + ": " + e.status + " " + e.statusText;
+                alert(error);
+                $("#statustext").html(error);
+                gtag('event', 'error', {
+                    'event_category': 'export',
+                    'event_label': e.statusText
+                });
+            }
+            console.error(e);
+        }).always(function(e) {
+            $("#cancel_download").hide();
+            $("#downloadprogresswrapper").hide();
+            $("#download").removeAttr("disabled");
+            $("#download").attr("class", "btn btn-primary");
+            clearInterval(interval);
         });
-        gtag('event', 'ready', {
-            'event_category': 'export',
-            'event_label': url
-        });
-    }).fail(function(e) {
-        if (e.statusText != "abort" && e.statusText != "error") {
-            var error = "There was an error exporting data for " + window.model + ": " + e.status + " " + e.statusText;
-            alert(error);
-            $("#statustext").html(error);
-            gtag('event', 'error', {
-                'event_category': 'export',
-                'event_label': e.statusText
-            });
-        }
-        console.error(e);
-    }).always(function(e) {
-        $("#cancel_download").hide();
-        $("#downloadprogresswrapper").hide();
-        $("#download").removeAttr("disabled");
-        $("#download").attr("class", "btn btn-primary");
-        clearInterval(interval);
-    });
+    }
 });
 
 $("#cancel_download").click(function() {
@@ -432,8 +492,12 @@ $("#cancel_download").click(function() {
     $("#download").removeAttr("disabled");
     $("#download").attr("class", "btn btn-primary");
     $("#statustext").html("Export cancelled");
-    window.currentXHR.abort();
-    clearInterval(interval);
+    if (window.ws) {
+        window.ws.close();
+    } else if (window.currentXHR) {
+        window.currentXHR.abort();
+        clearInterval(interval);
+    }
 });
 
 Date.prototype.formatYYYYMMDD = function(){
