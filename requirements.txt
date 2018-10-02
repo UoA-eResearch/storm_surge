@@ -5,3 +5,4 @@ numpy
 bottle
 bottle-mysql
 mysqlclient
+gevent-websocket
