@@ -21,7 +21,6 @@ application.install(plugin)
 
 submodels = ["Historical", "rcp4.5", "rcp8.5"]
 submodelExportNames = ["HIST", "rcp45", "rcp85"]
-CHUNKSIZE = 500
 
 @application.hook('after_request')
 def enable_cors():
@@ -138,10 +137,14 @@ def handle_websocket(db):
             count = db.fetchone()['count']
             print("{}s - {} results to fetch".format(time.time() - s, count))
             results = []
-            query = "SELECT ST_Y(l.latlng) AS lat, ST_X(l.latlng) AS lng, m.height, DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') AS datetime" + fromwhere + " LIMIT " + str(CHUNKSIZE)
-            for i in range(0, count, CHUNKSIZE):
-                db.execute(query + " OFFSET " + str(i))
-                print("{}s - query for chunk executed".format(time.time() - s, i))
+            query = "SELECT ST_Y(l.latlng) AS lat, ST_X(l.latlng) AS lng, m.height, DATE_FORMAT(d.datetime, '%Y-%m-%d %H:%i:%s') AS datetime" + fromwhere
+            chunksize = 500
+            for i in range(0, count, chunksize):
+                if count - i < chunksize:
+                    chunksize = count - i
+                chunked_query = query + " LIMIT {} OFFSET {}".format(chunksize, i)
+                db.execute(chunked_query)
+                print("{}s - query for chunk {} executed".format(time.time() - s, i))
                 theseresults = db.fetchall()
                 results.extend(theseresults)
                 pct_done = float(i) / float(count)
