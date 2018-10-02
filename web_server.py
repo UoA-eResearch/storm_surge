@@ -11,9 +11,8 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import time
 import json
 
-from gevent.pywsgi import WSGIServer
-from geventwebsocket import WebSocketError
-from geventwebsocket.handler import WebSocketHandler
+from bottle.ext.websocket import GeventWebSocketServer
+from bottle.ext.websocket import websocket
 
 application = Bottle()
 plugin = bottle_mysql.Plugin(dbuser='storm_ro', dbpass='storm', dbname='storm', dbhost='stormsurge.nectar.auckland.ac.nz')
@@ -114,9 +113,8 @@ def get(db):
     else:
         return {"results": results}
 
-@application.route('/websocket')
-def handle_websocket(db):
-    wsock = request.environ.get('wsgi.websocket')
+@application.route('/websocket', apply=[websocket])
+def handle_websocket(wsock, db):
     if not wsock:
         abort(400, 'Expected WebSocket request.')
 
@@ -151,7 +149,7 @@ def handle_websocket(db):
                 wsock.send(zipfilename)
             else:
                 wsock.send(json.dumps(results))
-        except WebSocketError:
+        except:
             break
 
 @application.get('/exports/<filename>')
@@ -192,7 +190,4 @@ def get_ranges(db):
     return result
 
 if __name__ == "__main__":
-    server = WSGIServer(("localhost", 8081), application,
-                    handler_class=WebSocketHandler)
-    print("up")
-    server.serve_forever()
+    run(application, host='127.0.0.1', port=8081, server=GeventWebSocketServer)
