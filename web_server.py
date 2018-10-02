@@ -34,11 +34,12 @@ def getParamsOrDefaults(params):
         params['model'] = 'Model_20CR'
         params['submodel'] = 0
     else:
-        submodel = 0
         if ' - ' in params['model']:
             bits = params['model'].split(' - ')
             params['model'] = bits[0]
             params['submodel'] = submodels.index(bits[1])
+        else:
+            params['submodel'] = 0
     if 'bounds' not in params:
         params['bounds'] = "Polygon((160 -30.5,187 -30.5,187 -49.5,160 -49.5, 160 -30.5))"
     if 'minDate' not in params:
