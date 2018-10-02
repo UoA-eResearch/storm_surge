@@ -200,5 +200,6 @@ if __name__ == "__main__":
         server='gunicorn',
         workers=8,
         worker_class="geventwebsocket.gunicorn.workers.GeventWebSocketWorker",
-        timeout=3600
+        timeout=3600,
+        capture_output=True
     )
