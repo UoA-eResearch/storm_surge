@@ -130,8 +130,10 @@ def handle_websocket(db):
                 wsock.send('{"error": "unable to parse JSON"}')
                 continue
             params = getParamsOrDefaults(params)
+            print(params)
             fromwhere = getQueryForParams(params)
             countquery = "SELECT COUNT(*) as count" + fromwhere
+            print(countquery)
             db.execute(countquery)
             count = db.fetchone()['count']
             print("{}s - {} results to fetch".format(time.time() - s, count))
@@ -192,7 +194,11 @@ def get_ranges(db):
     return result
 
 if __name__ == "__main__":
-    server = WSGIServer(("localhost", 8081), application,
-                    handler_class=WebSocketHandler)
-    print("up")
-    server.serve_forever()
+    application.run(
+        host='localhost',
+        port=8081,
+        server='gunicorn',
+        workers=8,
+        worker_class="geventwebsocket.gunicorn.workers.GeventWebSocketWorker",
+        timeout=3600
+    )

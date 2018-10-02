@@ -3,3 +3,5 @@
 misc
 *.log
 exports
+*.pyc
+*.out
