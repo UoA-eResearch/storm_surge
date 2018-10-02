@@ -148,14 +148,14 @@ def handle_websocket(db):
                 theseresults = db.fetchall()
                 results.extend(theseresults)
                 pct_done = float(i) / float(count)
-                wsock.send(str(pct_done))
+                wsock.send(json.dumps({"progress": pct_done}))
             print("{}s - all {} results fetched".format(time.time() - s, len(results)))
             if params['format'] == 'csv':
                 filename = getFilenameForParams(params)
                 zipfilename = writeCSV(filename, results)
-                wsock.send(zipfilename)
+                wsock.send(json.dumps({"url": zipfilename}))
             else:
-                wsock.send(json.dumps(results))
+                wsock.send(json.dumps({"results": results}))
         except WebSocketError:
             break
 
