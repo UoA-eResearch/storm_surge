@@ -21,7 +21,7 @@ application.install(plugin)
 
 submodels = ["Historical", "rcp4.5", "rcp8.5"]
 submodelExportNames = ["HIST", "rcp45", "rcp85"]
-CHUNKSIZE = 1000
+CHUNKSIZE = 500
 
 @application.hook('after_request')
 def enable_cors():
