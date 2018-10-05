@@ -359,6 +359,8 @@ function fetchRangesForModel(model) {
         if (dateRange.start < start || dateRange.end > end) {
             dataset.update({id: 2, start: start, end: end});
         }
+        markers.clearLayers();
+        markerLookup = [];
         fetchDataForModel(model, data.minDate);
     }).fail(function(e) {
         alert("There was an error fetching data ranges for " + model + ": " + e.status + " " + e.statusText);
