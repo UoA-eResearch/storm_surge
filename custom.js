@@ -198,9 +198,9 @@ function getColor(value){
             var lowC = colors[low];
             var highC = colors[high];
             var factor = (value - low) / (high - low);
-            var r = lowC[0] + (highC[0] - lowC[0]) * factor;
-            var g = lowC[1] + (highC[1] - lowC[1]) * factor;
-            var b = lowC[2] + (highC[2] - lowC[2]) * factor;
+            var r = Math.round(lowC[0] + (highC[0] - lowC[0]) * factor);
+            var g = Math.round(lowC[1] + (highC[1] - lowC[1]) * factor);
+            var b = Math.round(lowC[2] + (highC[2] - lowC[2]) * factor);
             return "rgb(" + r + "," + g + "," + b + ")";
         }
     }
