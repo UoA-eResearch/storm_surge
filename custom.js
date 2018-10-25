@@ -264,7 +264,7 @@ function popupHandler(popup) {
                 ws.close();
             }
         };
-    } catch {
+    } catch(err) {
         var start = new Date();
         var days = $('#selected_days').text();
         var est_time_instance = Math.round(days * rows_per_sec);
@@ -439,7 +439,7 @@ $("#download").click(function() {
                 ws.close();
             }
         };
-    } catch {
+    } catch(err) {
         var start = new Date();
         clearInterval(interval);
         var est_time_instance = window.est_time;
