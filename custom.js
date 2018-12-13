@@ -159,10 +159,21 @@ var labels = L.tileLayer.provider("Stamen.TonerLabels", {
 });
 labels.addTo(map);
 
+map.createPane('whitelabels');
+map.getPane('whitelabels').style.zIndex = 625;
+map.getPane('whitelabels').style.pointerEvents = 'none';
+map.getPane('whitelabels').style.filter = 'invert(100%)';
+var whitelabels = L.tileLayer.provider("Stamen.TonerLabels", {
+    pane: "whitelabels",
+    interactive: false,
+    opacity: .8,
+});
+
 var overlays = {
     "Selections": drawnItems,
     "Data points": markers,
     "City labels": labels,
+    "City labels (white)": whitelabels,
 }
 
 L.control.layers(baseMaps, overlays, { position: 'topright' }).addTo(map);
