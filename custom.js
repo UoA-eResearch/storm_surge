@@ -306,6 +306,7 @@ function fetchDataForModel(model, minDate, maxDate) {
         maxDate = minDate;
     }
     console.log("fetching", baseUrl, model, minDate, maxDate);
+    location.hash = model + "@" + minDate;
     $.getJSON(baseUrl, { model: model, minDate: minDate, maxDate: maxDate }, function(data) {
         console.log("Got " + data.results.length + " results for " + model);
         if (data.results.length == 0) return;
@@ -372,7 +373,8 @@ function fetchRangesForModel(model) {
         }
         markers.clearLayers();
         markerLookup = [];
-        fetchDataForModel(model, data.minDate);
+        var dateString = timeline.getCustomTime(1).formatYYYYMMDD() + " 12:00";
+        fetchDataForModel(model, dateString);
     }).fail(function(e) {
         alert("There was an error fetching data ranges for " + model + ": " + e.status + " " + e.statusText);
         console.error(e);
@@ -385,10 +387,6 @@ $("#model").change(function(e) {
     markerLookup = [];
     fetchRangesForModel(this.value);
 });
-
-window.model = "Model_20CR";
-
-fetchRangesForModel("Model_20CR")
 
 var interval;
 
@@ -659,8 +657,6 @@ timeline.on("select", function() {
     timeline.setSelection(2);
 });
 
-timeline.addCustomTime("1871-1-1 12:00", 1);
-
 timeline.on('timechanged', function(e) {
     e.time.setHours(12, 0, 0, 0);
     timeline.setCustomTime(e.time, 1);
@@ -682,8 +678,6 @@ $(".vis-panel.vis-bottom").bind('wheel', function (event) {
 $(".vis-current-time").prepend('<img id="curDateImg" data-toggle="tooltip" data-placement="top" src="images/pin.svg" title="Current time: ' + new Date() + '"/>');
 
 var range = dataset.get(2);
-
-timeline.setCustomTimeTitle("Drag this control to display the storm surge data for a specific date", 1)
 
 $(".vis-drag-left").attr("title", "Export range control: click and drag to define the beginning of the time series you want to export. Currently set to " + range.start.formatYYYYMMDD());
 $(".vis-drag-right").attr("title", "Export range control: click and drag to define the end of the time series you want to export. Currently set to " + range.end.formatYYYYMMDD());
@@ -715,3 +709,15 @@ $("#play").click(function() {
         clearInterval(playInterval);
     }
 });
+
+var model = "Model_20CR";
+if (location.hash.length > 1) {
+    var bits = decodeURIComponent(location.hash.slice(1)).split("@");
+    model = bits[0];
+    timeline.addCustomTime(bits[1], 1);
+} else {
+    timeline.addCustomTime("1871-1-1 12:00", 1);
+}
+$("#model").val(model).change();
+var dateString = timeline.getCustomTime(1);
+timeline.setCustomTimeTitle("Drag this control to display the storm surge data for a specific date. Current time: " + dateString, 1);
