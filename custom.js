@@ -306,7 +306,7 @@ function fetchDataForModel(model, minDate, maxDate) {
         maxDate = minDate;
     }
     console.log("fetching", baseUrl, model, minDate, maxDate);
-    location.hash = model + "@" + minDate;
+    location.hash = model + "@" + new Date(minDate).formatYYYYMMDD();
     $.getJSON(baseUrl, { model: model, minDate: minDate, maxDate: maxDate }, function(data) {
         console.log("Got " + data.results.length + " results for " + model);
         if (data.results.length == 0) return;
