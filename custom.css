@@ -91,7 +91,7 @@ html, body,  #map{
     bottom: 0;
 }
 
-#export {
+#mainControls {
     z-index: 10000;
     max-width: 20%;
     max-height: calc(100% - 90px);

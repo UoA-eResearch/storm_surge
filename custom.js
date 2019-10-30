@@ -391,6 +391,7 @@ $("#model").change(function(e) {
 var interval;
 
 $("#download").click(function() {
+
     var dt = dataset.get(2);
     var payload = {
         minDate: dt.start.formatYYYYMMDD() + " 12:00",
@@ -573,9 +574,11 @@ function updateTotalRows() {
     var points = $('#selected_points').text();
     var total = days * points;
     if (total == 0) {
+        $("#exportModalButton").attr("disabled", "disabled");
         $("#download").attr("disabled", "disabled");
         $("#est_time_wrapper").hide();
     } else {
+        $("#exportModalButton").removeAttr("disabled");
         $("#download").removeAttr("disabled");
         $("#est_time_wrapper").show();
     }

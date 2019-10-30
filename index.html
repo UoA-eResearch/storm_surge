@@ -32,67 +32,115 @@
     </head>
     <body>
         <h1 id="title">NZ Storm Surge Data Tool</h1>
-        <div id="map">
-            <div id="export">
-                <h3>Exporting</h3>
-                <h4>Step 1: Select a model</h4>
-                <select id="model" class="form-control" aria-describedby="selectHelp" style="outline: none;">
-                    <option value="Model_20CR">Model 20CR (Past)</option>
-                    <option>ACCESS10 - Historical</option>
-                    <option>ACCESS10 - rcp4.5</option>
-                    <option>ACCESS10 - rcp8.5</option>
-                    <option>BCC-CSM - Historical</option>
-                    <option>BCC-CSM - rcp4.5</option>
-                    <option>BCC-CSM - rcp8.5</option>
-                    <option>CSIRO - Historical</option>
-                    <option>CSIRO - rcp4.5</option>
-                    <option>CSIRO - rcp8.5</option>
-                    <option>EC_EARTH - Historical</option>
-                    <option>EC_EARTH - rcp4.5</option>
-                    <option>EC_EARTH - rcp8.5</option>
-                    <option>GFDL - Historical</option>
-                    <option>GFDL - rcp4.5</option>
-                    <option>GFDL - rcp8.5</option>
-                    <option>INM-CM4 - Historical</option>
-                    <option>INM-CM4 - rcp4.5</option>
-                    <option>INM-CM4 - rcp8.5</option>
-                    <option>MIROC5 - Historical</option>
-                    <option>MIROC5 - rcp4.5</option>
-                    <option>MIROC5 - rcp8.5</option>
-                </select>
-                <small id="selectHelp" class="form-text">
-                    Model_20CR is a hindcast of past data. The other models are forecasts, with historical hindcasts for accuracy evaluation.
-                    RCP4.5 and RCP8.5 refer to different levels of greenhouse gas concentration, click
-                    <a href="https://en.wikipedia.org/wiki/Representative_Concentration_Pathways">here</a> for more information.
-                </small>
-                <div id="download_info">
-                    <h4>Step 2: Select data points</h4>
-                    <small>To select a subset of data points, use the polygon or rectangle tool. Making a new selection will replace the previous selection.</small>
-                    <div id="control"></div>
-                    <h6>
-                        <span id="selected_points">0</span> data points selected.
-                    </h6>
-                    <h4>Step 3: Select a time range</h4>
-                    <small>Adjust the time range here or by dragging the ends of the timeseries export range control at the bottom.</small>
-                    <h6>Timeseries range:</h6>
-                    <form class="form-inline">
-                        <input id="start" type="date" class="form-control"></input>-
-                        <input id="end" type="date" class="form-control"></input>
-                    </form>
-                    <h6>
-                        <span id="selected_days">0</span> days selected.
-                    </h6>
-                    <h6>
-                        <span id="total_rows">0</span> total rows for export. <span id="est_time_wrapper">Estimated (worst-case) time to export: about <span id="est_time">1 minute</span></span>
-                    </h6>
-                    <button id="download" class="btn btn-primary" disabled>Export</button>
-                    <button id="cancel_download" class="btn btn-danger" style="display:none">Cancel</button>
-                    <h6 id="download_status">
-                        <div id="downloadprogresswrapper" class="progress" style="display: none">
-                            <div id="downloadprogress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0%" aria-valuemin="0%" aria-valuemax="100%" style="width: 0%"></div>
+        <div id="map"></div>
+        <div id="mainControls">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="export-tab" data-toggle="tab" href="#export" role="tab" aria-controls="export" aria-selected="true">Data Exporting</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="about-tab" data-toggle="tab" href="#about" role="tab" aria-controls="about" aria-selected="false">About</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="export" role="tabpanel" aria-labelledby="export-tab">
+                    <h4>Step 1: Select a model</h4>
+                    <select id="model" class="form-control" aria-describedby="selectHelp" style="outline: none;">
+                        <option value="Model_20CR">Model 20CR (Past)</option>
+                        <option>ACCESS10 - Historical</option>
+                        <option>ACCESS10 - rcp4.5</option>
+                        <option>ACCESS10 - rcp8.5</option>
+                        <option>BCC-CSM - Historical</option>
+                        <option>BCC-CSM - rcp4.5</option>
+                        <option>BCC-CSM - rcp8.5</option>
+                        <option>CSIRO - Historical</option>
+                        <option>CSIRO - rcp4.5</option>
+                        <option>CSIRO - rcp8.5</option>
+                        <option>EC_EARTH - Historical</option>
+                        <option>EC_EARTH - rcp4.5</option>
+                        <option>EC_EARTH - rcp8.5</option>
+                        <option>GFDL - Historical</option>
+                        <option>GFDL - rcp4.5</option>
+                        <option>GFDL - rcp8.5</option>
+                        <option>INM-CM4 - Historical</option>
+                        <option>INM-CM4 - rcp4.5</option>
+                        <option>INM-CM4 - rcp8.5</option>
+                        <option>MIROC5 - Historical</option>
+                        <option>MIROC5 - rcp4.5</option>
+                        <option>MIROC5 - rcp8.5</option>
+                    </select>
+                    <small id="selectHelp" class="form-text">
+                        Model_20CR is a hindcast of past data. The other models are forecasts, with historical hindcasts for accuracy evaluation.
+                        RCP4.5 and RCP8.5 refer to different levels of greenhouse gas concentration, click
+                        <a href="https://en.wikipedia.org/wiki/Representative_Concentration_Pathways">here</a> for more information.
+                    </small>
+                    <div id="download_info">
+                        <h4>Step 2: Select data points</h4>
+                        <small>To select a subset of data points, use the polygon or rectangle tool. Making a new selection will replace the previous selection.</small>
+                        <div id="control"></div>
+                        <h6>
+                            <span id="selected_points">0</span> data points selected.
+                        </h6>
+                        <h4>Step 3: Select a time range</h4>
+                        <small>Adjust the time range here or by dragging the ends of the timeseries export range control at the bottom.</small>
+                        <h6>Timeseries range:</h6>
+                        <form class="form-inline">
+                            <input id="start" type="date" class="form-control"></input>-
+                            <input id="end" type="date" class="form-control"></input>
+                        </form>
+                        <h6>
+                            <span id="selected_days">0</span> days selected.
+                        </h6>
+                        <h6>
+                            <span id="total_rows">0</span> total rows for export. <span id="est_time_wrapper">Estimated (worst-case) time to export: about <span id="est_time">1 minute</span></span>
+                        </h6>
+                        <!-- Button trigger modal -->
+                        <button id="exportModalButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exportModal" disabled>Export</button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exportModalLabel">Export disclaimer</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p style="margin: 12pt 0cm;color: rgb(34, 34, 34);font-style: normal;font-weight: 400;text-indent: 0px;background-color: rgb(255, 255, 255);text-align: justify;line-height: 15.6933px;font-size:15px;font-family: Verdana, sans-serif;">We encourage the use of this database, although we recommend to previously read the paper in order to understand how this database was developed, its limitations and validation.</p>
+                                        <p style="color: rgb(34, 34, 34);font-style: normal;font-weight: 400;text-indent: 0px;background-color: rgb(255, 255, 255);margin: 12pt 0cm 12pt 36pt;text-align: justify;line-height: 15.6933px;font-size:15px;font-family: Verdana, sans-serif;">-<span style="font-size:9px;line-height: normal;font-family: &quot;Times New Roman&quot;;">&nbsp; &nbsp; &nbsp;&nbsp;</span>Please, be careful using this database without validation in enclosed coasts (bays, estuaries), as the resolution of the storm-surge hindcast is not good enough to solve complicated bathymetries. For this end, a local study would be needed.</p>
+                                        <p style="color: rgb(34, 34, 34);font-style: normal;font-weight: 400;text-indent: 0px;background-color: rgb(255, 255, 255);margin: 12pt 0cm 12pt 36pt;text-align: justify;line-height: 15.6933px;font-size:15px;font-family: Verdana, sans-serif;">-<span style="font-size:9px;line-height: normal;font-family: &quot;Times New Roman&quot;;">&nbsp; &nbsp; &nbsp;&nbsp;</span>This database does not account for all the tropical and extra-tropical cyclones, as they are not well solved in the atmospheric pressure fields used to develop the storm surge database.</p>
+                                        <p>
+                                        <b style="color: rgb(34, 34, 34);font-family: Arial, Helvetica, sans-serif;font-size: small;font-style: normal;text-align: start;text-indent: 0px;background-color: rgb(255, 255, 255);"><em><u><span style="font-size:15px;line-height: 15.6933px;font-family: Verdana, sans-serif;">Cagigal L</span></u></em></b>
+                                        <i style="color: rgb(34, 34, 34);font-family: Arial, Helvetica, sans-serif;font-size: small;font-weight: 400;text-align: start;text-indent: 0px;background-color: rgb(255, 255, 255);"><u><span style="font-size:15px;line-height: 15.6933px;font-family: Verdana, sans-serif;">, Rueda A, Castanedo S, Cid A, Perez J, Stephens S, Coco G, Méndez F. Historical and future storm surge around New Zealand: From the 19th century to the end of the 21st century. International Journal of Climatology. 2019;1–14.&nbsp;
+                                            <a href="https://doi.org/10.1002/joc.6283" style="color: rgb(5, 99, 193);" target="_blank">https://doi.org/10.1002/joc.6283</a>
+                                        </span></u></i><span style="color: rgb(34, 34, 34);font-family: Arial, Helvetica, sans-serif;font-size: small;font-style: normal;font-weight: 400;text-indent: 0px;background-color: rgb(255, 255, 255);">&nbsp; &nbsp;&nbsp;</span></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button id="download" class="btn btn-primary" disabled>Export</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <h6 id="statustext"></h6>
-                    </h6>
+                        <button id="cancel_download" class="btn btn-danger" style="display:none">Cancel</button>
+                        <h6 id="download_status">
+                            <div id="downloadprogresswrapper" class="progress" style="display: none">
+                                <div id="downloadprogress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0%" aria-valuemin="0%" aria-valuemax="100%" style="width: 0%"></div>
+                            </div>
+                            <h6 id="statustext"></h6>
+                        </h6>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+                    <p style="margin: 0cm 0cm 0.0001pt;color: rgb(34, 34, 34);font-style: normal;font-weight: 400;text-indent: 0px;background-color: rgb(255, 255, 255);text-align: center;line-height: normal;font-size:15px;font-family: Verdana, sans-serif;"><strong><span style="font-size:16px;">Historical and future storm surge around New Zealand : From the 19th century to the end of the 21st century</span></strong></p>
+                    <p style="margin: 0cm 0cm 0.0001pt;color: rgb(34, 34, 34);font-style: normal;font-weight: 400;text-indent: 0px;background-color: rgb(255, 255, 255);text-align: center;line-height: normal;font-size:15px;font-family: Verdana, sans-serif;">&nbsp;</p>
+                    <p style="margin: 0cm 0cm 0.0001pt;color: rgb(34, 34, 34);font-style: normal;font-weight: 400;text-indent: 0px;background-color: rgb(255, 255, 255);text-align: center;line-height: normal;font-size:15px;font-family: Verdana, sans-serif;">Laura Cagigal, Ana Rueda, Sonia Castanedo, Alba Cid, Jorge Perez, Scott A. Stephens, Giovanni Coco and Fernando Mendez</p>
+                    <p style="margin: 12pt 0cm;color: rgb(34, 34, 34);font-style: normal;font-weight: 400;text-indent: 0px;background-color: rgb(255, 255, 255);text-align: justify;line-height: 15.6933px;font-size:15px;font-family: Verdana, sans-serif;">We developed a new hindcast for storm surge at a 0.25° spatial scale for the whole New Zealand area using a statistical downscaling technique that links the mean local atmospheric conditions with the maximum storm surge levels on a daily scale. &nbsp;After validating the hindcast against sea-level instrumental records from 17 tidal gauges around New Zealand, the same technique has been applied to obtain storm surge projections until 2100 using different global climate models.</p>
+                    <p style="margin: 0cm 0cm 0.0001pt;color: rgb(34, 34, 34);font-style: normal;font-weight: 400;text-align: start;text-indent: 0px;background-color: rgb(255, 255, 255);line-height: normal;font-size:15px;font-family: Verdana, sans-serif;"><u>How to cite this article</u>: Cagigal L, Rueda A, Castanedo S, et al. Historical and future storm surge around New Zealand: From the 19th century to the end of the 21st century. Int J Climatol. 2019;1–14.&nbsp;
+                        <a href="https://doi.org/10.1002/joc.6283" style="color: rgb(5, 99, 193);" target="_blank">https://doi.org/10.1002/joc.6283</a>
+                    </p>
                 </div>
             </div>
         </div>
