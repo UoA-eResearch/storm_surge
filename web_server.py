@@ -16,7 +16,7 @@ from geventwebsocket import WebSocketError
 from geventwebsocket.handler import WebSocketHandler
 
 application = Bottle()
-plugin = bottle_mysql.Plugin(dbuser='storm_ro', dbpass='storm', dbname='storm', dbhost='stormsurge.nectar.auckland.ac.nz')
+plugin = bottle_mysql.Plugin(dbuser='storm_ro', dbpass='storm', dbname='storm', dbhost='storm-surge.cloud.edu.au')
 application.install(plugin)
 
 submodels = ["Historical", "rcp4.5", "rcp8.5"]

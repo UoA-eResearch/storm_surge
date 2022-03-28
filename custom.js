@@ -297,8 +297,8 @@ function popupHandler(popup) {
     }
 }
 
-var baseUrl = "https://stormsurge.nectar.auckland.ac.nz/storm/";
-var wsUrl = "wss://stormsurge.nectar.auckland.ac.nz/storm/websocket";
+var baseUrl = "https://storm-surge.cloud.edu.au/storm/";
+var wsUrl = "wss://storm-surge.cloud.edu.au/storm/websocket";
 var markerLookup = [];
 
 function fetchDataForModel(model, minDate, maxDate) {
